@@ -26,10 +26,12 @@ public class ProductListPageServlet extends HttpServlet {
         String query = request.getParameter("searchingQuery");
         SortingField sortingField = SortingField.valueOf(
                 Optional.ofNullable(request.getParameter("sort"))
+                        .filter(sort -> !sort.isEmpty())
                         .orElse("none")
         );
         SortingOrder sortingOrder = SortingOrder.valueOf(
                 Optional.ofNullable(request.getParameter("order"))
+                        .filter(order -> !order.isEmpty())
                         .orElse("none")
         );
 

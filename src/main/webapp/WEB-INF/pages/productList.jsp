@@ -46,6 +46,7 @@
             </c:choose>
           </a>
         </td>
+        <td></td>
       </tr>
     </thead>
     <c:forEach var="product" items="${products}">
@@ -59,7 +60,23 @@
           </a>
         </td>
         <td class="price">
-          <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+          <a href="?sort=${param.sort}&order=${param.order}&searchingQuery=${param.searchingQuery}&price=${product.id}#price-${product.id}">
+            <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+          </a>
+        </td>
+        <td>
+          <c:if test="${product.id == param.price}">
+            <div class="price-history-form" id="price-${product.id}">
+              <div class="price-history-content">
+                <p>Price history: ${product.description}</p>
+                  <c:forEach var="history" items="${product.priceHistory}">
+                    <p>
+                      <fmt:formatNumber value="${history}" type="currency" currencySymbol="${product.currency.symbol}" />
+                    </p>
+                  </c:forEach>
+              </div>
+            </div>
+          </c:if>
         </td>
       </tr>
     </c:forEach>

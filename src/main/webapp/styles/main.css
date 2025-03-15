@@ -14,12 +14,17 @@ header img {
 
 table {
   border-collapse: collapse;
-  border : 1px solid gray;
+  border : none;
 }
 td {
   padding: 10px;
   border : 1px solid gray;
   vertical-align: top;
+}
+tr td:last-of-type {
+  border-bottom: none;
+  border-right: none;
+  border-top: none;
 }
 .price {
   text-align: right;
@@ -37,6 +42,18 @@ footer {
   display: flex;
   align-items: center;
   margin-top: 15px;
+}
+
+.price-history-form {
+  width: fit-content;
+  background-color: white;
+  border: 1px solid #ddd;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+}
+
+.price-history-content {
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 /* Page specific styles */

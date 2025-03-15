@@ -47,7 +47,8 @@ public class ArrayListProductDaoTest
                 new BigDecimal(200),
                 Currency.getInstance("USD"),
                 10,
-                "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone.jpg"
+                "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone.jpg",
+                List.of(BigDecimal.valueOf(295), BigDecimal.valueOf(250), BigDecimal.valueOf(225))
         );
 
 
@@ -84,7 +85,8 @@ public class ArrayListProductDaoTest
                 new BigDecimal(2000),
                 Currency.getInstance("USD"),
                 8,
-                "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone.jpg"
+                "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone.jpg",
+                List.of(BigDecimal.valueOf(2095), BigDecimal.valueOf(2100), BigDecimal.valueOf(2045))
         );
 
         productDao.save(newProduct);
@@ -104,7 +106,8 @@ public class ArrayListProductDaoTest
                 new BigDecimal(2000),
                 Currency.getInstance("USD"),
                 8,
-                "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone.jpg"
+                "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone.jpg",
+                List.of(BigDecimal.valueOf(2095), BigDecimal.valueOf(2100), BigDecimal.valueOf(2045))
         );
 
         productDao.save(updateProduct);
