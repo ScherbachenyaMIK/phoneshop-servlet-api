@@ -2,10 +2,13 @@ package com.es.phoneshop.model.product;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Currency;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
@@ -39,13 +42,40 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public List<Product> findProducts() {
+    public List<Product> findProducts(String query) {
+        List<String> keyWords = Optional.ofNullable(query)
+                .map(String::trim)
+                .map(String::toLowerCase)
+                .filter(q -> !q.isEmpty())
+                .map(q -> Arrays.stream(query.split("\\s+"))
+                        .map(String::toLowerCase)
+                        .toList())
+                .orElse(List.of());
+
         lock.readLock().lock();
         try {
             return data.stream()
                     .filter(item ->
                             item.getStock() > 0 && !Objects.isNull(item.getPrice())
                     )
+                    .filter(item ->
+                            keyWords.isEmpty() ||
+                            keyWords.stream()
+                                    .anyMatch(word ->
+                                            item.getDescription()
+                                                    .toLowerCase()
+                                                    .matches(".*\\b" + word + "\\b.*")
+                    ))
+                    .sorted(Comparator.comparingDouble(item -> {
+                                long matches = keyWords.stream()
+                                        .filter(item.getDescription().toLowerCase()::contains)
+                                        .count();
+                                long totalWords = item.getDescription()
+                                        .split("\\s+")
+                                        .length;
+                                return -(double) matches / totalWords;
+                            }
+                    ))
                     .collect(Collectors.toList());
         } finally {
             lock.readLock().unlock();

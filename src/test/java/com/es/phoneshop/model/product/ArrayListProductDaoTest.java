@@ -47,8 +47,8 @@ public class ArrayListProductDaoTest
     }
 
     @Test
-    public void testFindProducts() {
-        List<Product> result = productDao.findProducts();
+    public void testFindProductsWithNoFilters() {
+        List<Product> result = productDao.findProducts(null);
 
         assertFalse(result.isEmpty());
         result.forEach(item ->
@@ -58,7 +58,7 @@ public class ArrayListProductDaoTest
 
     @Test
     public void testSaveProduct() {
-        int listSize = productDao.findProducts().size();
+        int listSize = productDao.findProducts(null).size();
         //Product must have non-null price and positive stock
         Product newProduct = new Product(
                 "iphone10",
@@ -70,14 +70,14 @@ public class ArrayListProductDaoTest
         );
 
         productDao.save(newProduct);
-        List<Product> result = productDao.findProducts();
+        List<Product> result = productDao.findProducts(null);
 
         assertEquals(listSize + 1, result.size());
     }
 
     @Test
     public void testUpdateProduct() {
-        int listSize = productDao.findProducts().size();
+        int listSize = productDao.findProducts(null).size();
         //Product must have non-null price and positive stock
         Product updateProduct = new Product(
                 4L,
@@ -90,7 +90,7 @@ public class ArrayListProductDaoTest
         );
 
         productDao.save(updateProduct);
-        List<Product> result = productDao.findProducts();
+        List<Product> result = productDao.findProducts(null);
         Product updatedProduct = productDao.getProduct(4L);
 
         assertEquals(listSize, result.size());
@@ -99,11 +99,11 @@ public class ArrayListProductDaoTest
 
     @Test(expected = NoSuchElementException.class)
     public void testDeleteProduct() {
-        int listSize = productDao.findProducts().size();
+        int listSize = productDao.findProducts(null).size();
         Long idToDelete = 7L;
 
         productDao.delete(idToDelete);
-        List<Product> result = productDao.findProducts();
+        List<Product> result = productDao.findProducts(null);
 
         assertEquals(listSize - 1, result.size());
 
@@ -112,9 +112,34 @@ public class ArrayListProductDaoTest
 
     @Test(expected = NoSuchElementException.class)
     public void testDeleteProductThrowsNoSuchElementException() {
-        int listSize = productDao.findProducts().size();
+        int listSize = productDao.findProducts(null).size();
         Long idToDelete = 20L;
 
         productDao.delete(idToDelete);
+    }
+
+    @Test
+    public void testFindProductsWithFilter() {
+        String query = "SaMSung   S             III";
+        List<Product> result = productDao.findProducts(query);
+
+        result.forEach(item -> {
+            assertTrue(item.getStock() > 0 && !Objects.isNull(item.getPrice()));
+            assertTrue(
+                    item.getDescription().toLowerCase().matches(".*\\bsamsung\\b.*")
+                    || item.getDescription().toLowerCase().matches(".*\\bs\\b.*")
+                    || item.getDescription().toLowerCase().matches(".*\\biii\\b.*")
+            );
+            }
+        );
+        assertEquals("Samsung Galaxy S III", result.get(0).getDescription());
+    }
+
+    @Test
+    public void testFindProductsWithFilterReturnEmpty() {
+        String query = "abacaba";
+        List<Product> result = productDao.findProducts(query);
+
+        assertTrue(result.isEmpty());
     }
 }
