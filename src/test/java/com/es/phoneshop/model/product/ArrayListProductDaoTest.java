@@ -1,5 +1,8 @@
 package com.es.phoneshop.model.product;
 
+import com.es.phoneshop.web.ProductDemoDataServletContextListener;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextEvent;
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.List;
@@ -9,14 +12,29 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ArrayListProductDaoTest
 {
+    static {
+        ProductDemoDataServletContextListener listener = new ProductDemoDataServletContextListener();
+
+        ServletContextEvent event = mock(ServletContextEvent.class);
+        ServletContext context = mock(ServletContext.class);
+
+        when(event.getServletContext()).thenReturn(context);
+        when(context.getInitParameter("insertDemoData")).thenReturn("true");
+
+        listener.contextInitialized(event);
+    }
+
     private ProductDao productDao;
 
     @Before
     public void setup() {
-        productDao = new ArrayListProductDao();
+        productDao = ArrayListProductDao.getInstance();
+
     }
 
     @Test
