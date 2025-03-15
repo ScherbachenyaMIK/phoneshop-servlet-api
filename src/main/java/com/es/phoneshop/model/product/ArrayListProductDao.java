@@ -42,7 +42,7 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public List<Product> findProducts(String query) {
+    public List<Product> findProducts(String query, SortingField field, SortingOrder order) {
         List<String> keyWords = Optional.ofNullable(query)
                 .map(String::trim)
                 .map(String::toLowerCase)
@@ -76,6 +76,7 @@ public class ArrayListProductDao implements ProductDao {
                                 return -(double) matches / totalWords;
                             }
                     ))
+                    .sorted(prepareComparator(field, order))
                     .collect(Collectors.toList());
         } finally {
             lock.readLock().unlock();
@@ -127,6 +128,28 @@ public class ArrayListProductDao implements ProductDao {
         } finally {
             lock.readLock().unlock();
         }
+    }
+
+    private Comparator<Product> prepareComparator(SortingField field, SortingOrder order) {
+        Comparator<Product> comparator;
+
+        switch (field) {
+            case description -> comparator = Comparator.comparing(
+                    Product::getDescription
+            );
+            case price -> comparator = Comparator.comparing(
+                    Product::getPrice
+            );
+            default -> {
+                return Comparator.comparingInt(x -> 0);
+            }
+        }
+
+        if (order == SortingOrder.desc) {
+            comparator = comparator.reversed();
+        }
+
+        return comparator;
     }
 
     private void getSampleProducts(){

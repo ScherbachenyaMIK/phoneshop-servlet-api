@@ -48,7 +48,7 @@ public class ArrayListProductDaoTest
 
     @Test
     public void testFindProductsWithNoFilters() {
-        List<Product> result = productDao.findProducts(null);
+        List<Product> result = productDao.findProducts(null, SortingField.none, SortingOrder.none);
 
         assertFalse(result.isEmpty());
         result.forEach(item ->
@@ -58,7 +58,7 @@ public class ArrayListProductDaoTest
 
     @Test
     public void testSaveProduct() {
-        int listSize = productDao.findProducts(null).size();
+        int listSize = productDao.findProducts(null, SortingField.none, SortingOrder.none).size();
         //Product must have non-null price and positive stock
         Product newProduct = new Product(
                 "iphone10",
@@ -70,14 +70,14 @@ public class ArrayListProductDaoTest
         );
 
         productDao.save(newProduct);
-        List<Product> result = productDao.findProducts(null);
+        List<Product> result = productDao.findProducts(null, SortingField.none, SortingOrder.none);
 
         assertEquals(listSize + 1, result.size());
     }
 
     @Test
     public void testUpdateProduct() {
-        int listSize = productDao.findProducts(null).size();
+        int listSize = productDao.findProducts(null, SortingField.none, SortingOrder.none).size();
         //Product must have non-null price and positive stock
         Product updateProduct = new Product(
                 4L,
@@ -90,7 +90,7 @@ public class ArrayListProductDaoTest
         );
 
         productDao.save(updateProduct);
-        List<Product> result = productDao.findProducts(null);
+        List<Product> result = productDao.findProducts(null, SortingField.none, SortingOrder.none);
         Product updatedProduct = productDao.getProduct(4L);
 
         assertEquals(listSize, result.size());
@@ -99,11 +99,11 @@ public class ArrayListProductDaoTest
 
     @Test(expected = NoSuchElementException.class)
     public void testDeleteProduct() {
-        int listSize = productDao.findProducts(null).size();
+        int listSize = productDao.findProducts(null, SortingField.none, SortingOrder.none).size();
         Long idToDelete = 7L;
 
         productDao.delete(idToDelete);
-        List<Product> result = productDao.findProducts(null);
+        List<Product> result = productDao.findProducts(null, SortingField.none, SortingOrder.none);
 
         assertEquals(listSize - 1, result.size());
 
@@ -112,7 +112,7 @@ public class ArrayListProductDaoTest
 
     @Test(expected = NoSuchElementException.class)
     public void testDeleteProductThrowsNoSuchElementException() {
-        int listSize = productDao.findProducts(null).size();
+        int listSize = productDao.findProducts(null, SortingField.none, SortingOrder.none).size();
         Long idToDelete = 20L;
 
         productDao.delete(idToDelete);
@@ -121,7 +121,7 @@ public class ArrayListProductDaoTest
     @Test
     public void testFindProductsWithFilter() {
         String query = "SaMSung   S             III";
-        List<Product> result = productDao.findProducts(query);
+        List<Product> result = productDao.findProducts(query, SortingField.none, SortingOrder.none);
 
         result.forEach(item -> {
             assertTrue(item.getStock() > 0 && !Objects.isNull(item.getPrice()));
@@ -138,8 +138,30 @@ public class ArrayListProductDaoTest
     @Test
     public void testFindProductsWithFilterReturnEmpty() {
         String query = "abacaba";
-        List<Product> result = productDao.findProducts(query);
+        List<Product> result = productDao.findProducts(query, SortingField.none, SortingOrder.none);
 
         assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testFindProductsWithSortingDescriptionAsc() {
+        List<Product> result = productDao.findProducts(
+                null,
+                SortingField.description,
+                SortingOrder.asc
+        );
+
+        assertTrue(result.get(0).getDescription().startsWith("Apple"));
+    }
+
+    @Test
+    public void testFindProductsWithSortingPriceDesc() {
+        List<Product> result = productDao.findProducts(
+                "Samsung",
+                SortingField.price,
+                SortingOrder.desc
+        );
+
+        assertTrue(result.get(0).getPrice().compareTo(result.get(1).getPrice()) >= 0);
     }
 }

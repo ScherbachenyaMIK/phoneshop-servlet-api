@@ -16,8 +16,36 @@
     <thead>
       <tr>
         <td>Image</td>
-        <td>Description</td>
-        <td class="price">Price</td>
+        <td>
+          Description
+          <a href="?sort=description&order=asc&searchingQuery=${param.searchingQuery}", style="text-decoration: none; color: black;">
+            <c:choose>
+              <c:when test="${param.sort eq 'description' and param.order eq 'asc'}">▲</c:when>
+              <c:otherwise>△</c:otherwise>
+            </c:choose>
+          </a>
+          <a href="?sort=description&order=desc&searchingQuery=${param.searchingQuery}", style="text-decoration: none; color: black;">
+            <c:choose>
+              <c:when test="${param.sort eq 'description' and param.order eq 'desc'}">▼</c:when>
+              <c:otherwise>▽</c:otherwise>
+            </c:choose>
+          </a>
+        </td>
+        <td class="price">
+          Price
+          <a href="?sort=price&order=asc&searchingQuery=${param.searchingQuery}", style="text-decoration: none; color: black;">
+            <c:choose>
+              <c:when test="${param.sort eq 'price' and param.order eq 'asc'}">▲</c:when>
+              <c:otherwise>△</c:otherwise>
+            </c:choose>
+          </a>
+          <a href="?sort=price&order=desc&searchingQuery=${param.searchingQuery}", style="text-decoration: none; color: black;">
+            <c:choose>
+              <c:when test="${param.sort eq 'price' and param.order eq 'desc'}">▼</c:when>
+              <c:otherwise>▽</c:otherwise>
+            </c:choose>
+          </a>
+        </td>
       </tr>
     </thead>
     <c:forEach var="product" items="${products}">
