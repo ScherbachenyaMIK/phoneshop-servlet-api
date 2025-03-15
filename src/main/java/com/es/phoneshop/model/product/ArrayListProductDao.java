@@ -40,7 +40,9 @@ public class ArrayListProductDao implements ProductDao {
             return data.stream()
                     .filter(item -> id.equals(item.getId()))
                     .findAny()
-                    .orElseThrow(NoSuchElementException::new);
+                    .orElseThrow(() ->
+                            new NoSuchElementException("Product with id " + id + " not found.")
+                    );
         } finally {
             lock.readLock().unlock();
         }
@@ -121,7 +123,7 @@ public class ArrayListProductDao implements ProductDao {
                 lock.writeLock().unlock();
             }
         } else {
-            throw new NoSuchElementException();
+            throw new NoSuchElementException("Product with id " + id + " not found.");
         }
     }
 

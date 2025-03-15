@@ -28,6 +28,17 @@ img.product-tile {
   max-width: 64px;
 }
 
+footer {
+  background-color: aquamarine;
+  color: #2b2b2b;
+  text-shadow: 1px 1px 0px #ededed, 4px 4px 0px rgba(0,0,0,0.15);
+  height: 5vh;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  margin-top: 15px;
+}
+
 /* Page specific styles */
 body.product-list {
 
