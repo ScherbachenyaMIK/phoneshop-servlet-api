@@ -130,7 +130,6 @@ public class ArrayListProductDaoTest
 
     @Test(expected = NoSuchElementException.class)
     public void testDeleteProductThrowsNoSuchElementException() {
-        int listSize = productDao.findProducts(null, SortingField.none, SortingOrder.none).size();
         Long idToDelete = 20L;
 
         productDao.delete(idToDelete);

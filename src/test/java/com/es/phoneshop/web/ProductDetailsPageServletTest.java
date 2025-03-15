@@ -27,7 +27,7 @@ public class ProductDetailsPageServletTest {
     @Mock
     private ServletConfig config;
 
-    private ProductDetailsPageServlet servlet = new ProductDetailsPageServlet();
+    private final ProductDetailsPageServlet servlet = new ProductDetailsPageServlet();
 
     @Before
     public void setup() throws ServletException {
