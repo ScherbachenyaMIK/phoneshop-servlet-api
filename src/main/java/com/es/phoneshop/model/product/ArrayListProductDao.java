@@ -51,11 +51,10 @@ public class ArrayListProductDao implements ProductDao {
     @Override
     public List<Product> findProducts(String query, SortingField field, SortingOrder order) {
         List<String> keyWords = Optional.ofNullable(query)
-                .map(String::trim)
                 .map(String::toLowerCase)
+                .map(String::trim)
                 .filter(q -> !q.isEmpty())
-                .map(q -> Arrays.stream(query.split("\\s+"))
-                        .map(String::toLowerCase)
+                .map(q -> Arrays.stream(q.split("\\s+"))
                         .toList())
                 .orElse(List.of());
 
@@ -71,7 +70,7 @@ public class ArrayListProductDao implements ProductDao {
                                     .anyMatch(word ->
                                             item.getDescription()
                                                     .toLowerCase()
-                                                    .matches(".*\\b" + word + "\\b.*")
+                                                    .contains(word)
                     ))
                     .sorted(Comparator.comparingDouble(item -> {
                                 long matches = keyWords.stream()

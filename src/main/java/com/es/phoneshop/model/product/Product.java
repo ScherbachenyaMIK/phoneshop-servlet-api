@@ -14,12 +14,12 @@ public class Product {
     private Currency currency;
     private int stock;
     private String imageUrl;
-    private List<BigDecimal> priceHistory;
+    private List<PriceHistory> priceHistory;
 
     public Product() {
     }
 
-    public Product(Long id, String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl, List<BigDecimal> priceHistory) {
+    public Product(Long id, String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl, List<PriceHistory> priceHistory) {
         this.id = id;
         this.code = code;
         this.description = description;
@@ -30,7 +30,7 @@ public class Product {
         this.priceHistory = priceHistory;
     }
 
-    public Product(String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl, List<BigDecimal> priceHistory) {
+    public Product(String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl, List<PriceHistory> priceHistory) {
         this.code = code;
         this.description = description;
         this.price = price;
@@ -96,11 +96,11 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
-    public List<BigDecimal> getPriceHistory() {
+    public List<PriceHistory> getPriceHistory() {
         return priceHistory;
     }
 
-    public void setPriceHistory(List<BigDecimal> priceHistory) {
+    public void setPriceHistory(List<PriceHistory> priceHistory) {
         this.priceHistory = priceHistory;
     }
 }

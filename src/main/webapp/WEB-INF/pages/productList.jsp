@@ -18,33 +18,13 @@
         <td>Image</td>
         <td>
           Description
-          <a href="?sort=description&order=asc&searchingQuery=${param.searchingQuery}", style="text-decoration: none; color: black;">
-            <c:choose>
-              <c:when test="${param.sort eq 'description' and param.order eq 'asc'}">▲</c:when>
-              <c:otherwise>△</c:otherwise>
-            </c:choose>
-          </a>
-          <a href="?sort=description&order=desc&searchingQuery=${param.searchingQuery}", style="text-decoration: none; color: black;">
-            <c:choose>
-              <c:when test="${param.sort eq 'description' and param.order eq 'desc'}">▼</c:when>
-              <c:otherwise>▽</c:otherwise>
-            </c:choose>
-          </a>
+          <tags:sortButton field="description" order="asc"/>
+          <tags:sortButton field="description" order="desc"/>
         </td>
         <td class="price">
           Price
-          <a href="?sort=price&order=asc&searchingQuery=${param.searchingQuery}", style="text-decoration: none; color: black;">
-            <c:choose>
-              <c:when test="${param.sort eq 'price' and param.order eq 'asc'}">▲</c:when>
-              <c:otherwise>△</c:otherwise>
-            </c:choose>
-          </a>
-          <a href="?sort=price&order=desc&searchingQuery=${param.searchingQuery}", style="text-decoration: none; color: black;">
-            <c:choose>
-              <c:when test="${param.sort eq 'price' and param.order eq 'desc'}">▼</c:when>
-              <c:otherwise>▽</c:otherwise>
-            </c:choose>
-          </a>
+          <tags:sortButton field="price" order="asc"/>
+          <tags:sortButton field="price" order="desc"/>
         </td>
         <td></td>
       </tr>
@@ -71,7 +51,9 @@
                 <p>Price history: ${product.description}</p>
                   <c:forEach var="history" items="${product.priceHistory}">
                     <p>
-                      <fmt:formatNumber value="${history}" type="currency" currencySymbol="${product.currency.symbol}" />
+                      <fmt:formatDate value="${history.date}" pattern="dd MMM yyyy" />
+                      -
+                      <fmt:formatNumber value="${history.price}" type="currency" currencySymbol="${product.currency.symbol}" />
                     </p>
                   </c:forEach>
               </div>

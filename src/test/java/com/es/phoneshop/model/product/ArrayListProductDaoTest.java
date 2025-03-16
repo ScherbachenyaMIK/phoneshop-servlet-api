@@ -4,6 +4,8 @@ import com.es.phoneshop.web.ProductDemoDataServletContextListener;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import java.math.BigDecimal;
+import java.sql.Date;
+import java.time.Instant;
 import java.util.Currency;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -48,7 +50,7 @@ public class ArrayListProductDaoTest
                 Currency.getInstance("USD"),
                 10,
                 "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone.jpg",
-                List.of(BigDecimal.valueOf(295), BigDecimal.valueOf(250), BigDecimal.valueOf(225))
+                List.of(new PriceHistory(Date.from(Instant.now()), BigDecimal.valueOf(295)), new PriceHistory(Date.from(Instant.now()), BigDecimal.valueOf(250)), new PriceHistory(Date.from(Instant.now()), BigDecimal.valueOf(225)))
         );
 
 
@@ -86,7 +88,7 @@ public class ArrayListProductDaoTest
                 Currency.getInstance("USD"),
                 8,
                 "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone.jpg",
-                List.of(BigDecimal.valueOf(2095), BigDecimal.valueOf(2100), BigDecimal.valueOf(2045))
+                List.of(new PriceHistory(Date.from(Instant.now()), BigDecimal.valueOf(2095)), new PriceHistory(Date.from(Instant.now()), BigDecimal.valueOf(2100)), new PriceHistory(Date.from(Instant.now()), BigDecimal.valueOf(2045)))
         );
 
         productDao.save(newProduct);
@@ -107,7 +109,7 @@ public class ArrayListProductDaoTest
                 Currency.getInstance("USD"),
                 8,
                 "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone.jpg",
-                List.of(BigDecimal.valueOf(2095), BigDecimal.valueOf(2100), BigDecimal.valueOf(2045))
+                List.of(new PriceHistory(Date.from(Instant.now()), BigDecimal.valueOf(2095)), new PriceHistory(Date.from(Instant.now()), BigDecimal.valueOf(2100)), new PriceHistory(Date.from(Instant.now()), BigDecimal.valueOf(2045)))
         );
 
         productDao.save(updateProduct);
@@ -146,9 +148,9 @@ public class ArrayListProductDaoTest
         result.forEach(item -> {
             assertTrue(item.getStock() > 0 && !Objects.isNull(item.getPrice()));
             assertTrue(
-                    item.getDescription().toLowerCase().matches(".*\\bsamsung\\b.*")
-                    || item.getDescription().toLowerCase().matches(".*\\bs\\b.*")
-                    || item.getDescription().toLowerCase().matches(".*\\biii\\b.*")
+                    item.getDescription().toLowerCase().contains("samsung")
+                    || item.getDescription().toLowerCase().contains("s")
+                    || item.getDescription().toLowerCase().contains("iii")
             );
             }
         );
