@@ -1,11 +1,12 @@
 package com.es.phoneshop.model.product;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Currency;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
@@ -18,11 +19,18 @@ public class ArrayListProductDao implements ProductDao {
 
     private final ReadWriteLock lock;
 
-    public ArrayListProductDao() {
+    private static final class ArrayListProductDaoHolder {
+        private static final ProductDao instance = new ArrayListProductDao();
+    }
+
+    public static ProductDao getInstance() {
+        return ArrayListProductDaoHolder.instance;
+    }
+
+    private ArrayListProductDao() {
         this.data = new ArrayList<>();
         maxId = 1L;
         lock = new ReentrantReadWriteLock();
-        this.getSampleProducts();
     }
 
     @Override
@@ -32,20 +40,49 @@ public class ArrayListProductDao implements ProductDao {
             return data.stream()
                     .filter(item -> id.equals(item.getId()))
                     .findAny()
-                    .orElseThrow(NoSuchElementException::new);
+                    .orElseThrow(() ->
+                            new NoSuchElementException("Product with id " + id + " not found.")
+                    );
         } finally {
             lock.readLock().unlock();
         }
     }
 
     @Override
-    public List<Product> findProducts() {
+    public List<Product> findProducts(String query, SortingField field, SortingOrder order) {
+        List<String> keyWords = Optional.ofNullable(query)
+                .map(String::toLowerCase)
+                .map(String::trim)
+                .filter(q -> !q.isEmpty())
+                .map(q -> Arrays.stream(q.split("\\s+"))
+                        .toList())
+                .orElse(List.of());
+
         lock.readLock().lock();
         try {
             return data.stream()
                     .filter(item ->
                             item.getStock() > 0 && !Objects.isNull(item.getPrice())
                     )
+                    .filter(item ->
+                            keyWords.isEmpty() ||
+                            keyWords.stream()
+                                    .anyMatch(word ->
+                                            item.getDescription()
+                                                    .toLowerCase()
+                                                    .contains(word)
+                    ))
+                    .sorted(Comparator.comparingDouble(item -> {
+                                long matches = keyWords.stream()
+                                        .filter(item.getDescription().toLowerCase()::contains)
+                                        .count();
+                                long totalWords = item.getDescription()
+                                        .split("\\s+")
+                                        .length;
+                                return -(double) matches / totalWords;
+                            }
+                    ))
+                    .sorted(prepareComparator(field, order))
                     .collect(Collectors.toList());
         } finally {
             lock.readLock().unlock();
@@ -85,7 +122,7 @@ public class ArrayListProductDao implements ProductDao {
                 lock.writeLock().unlock();
             }
         } else {
-            throw new NoSuchElementException();
+            throw new NoSuchElementException("Product with id " + id + " not found.");
         }
     }
 
@@ -99,20 +136,25 @@ public class ArrayListProductDao implements ProductDao {
         }
     }
 
-    private void getSampleProducts(){
-        Currency usd = Currency.getInstance("USD");
-        save(new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"));
-        save(new Product("sgs2", "Samsung Galaxy S II", new BigDecimal(200), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20II.jpg"));
-        save(new Product("sgs3", "Samsung Galaxy S III", new BigDecimal(300), usd, 5, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20III.jpg"));
-        save(new Product("iphone", "Apple iPhone", new BigDecimal(200), usd, 10, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone.jpg"));
-        save(new Product("iphone6", "Apple iPhone 6", new BigDecimal(1000), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone%206.jpg"));
-        save(new Product("htces4g", "HTC EVO Shift 4G", new BigDecimal(320), usd, 3, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/HTC/HTC%20EVO%20Shift%204G.jpg"));
-        save(new Product("sec901", "Sony Ericsson C901", new BigDecimal(420), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Sony/Sony%20Ericsson%20C901.jpg"));
-        save(new Product("xperiaxz", "Sony Xperia XZ", new BigDecimal(120), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Sony/Sony%20Xperia%20XZ.jpg"));
-        save(new Product("nokia3310", "Nokia 3310", new BigDecimal(70), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Nokia/Nokia%203310.jpg"));
-        save(new Product("palmp", "Palm Pixi", new BigDecimal(170), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Palm/Palm%20Pixi.jpg"));
-        save(new Product("simc56", "Siemens C56", new BigDecimal(70), usd, 20, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C56.jpg"));
-        save(new Product("simc61", "Siemens C61", new BigDecimal(80), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C61.jpg"));
-        save(new Product("simsxg75", "Siemens SXG75", new BigDecimal(150), usd, 40, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20SXG75.jpg"));
+    private Comparator<Product> prepareComparator(SortingField field, SortingOrder order) {
+        Comparator<Product> comparator;
+
+        switch (field) {
+            case description -> comparator = Comparator.comparing(
+                    Product::getDescription
+            );
+            case price -> comparator = Comparator.comparing(
+                    Product::getPrice
+            );
+            default -> {
+                return Comparator.comparingInt(x -> 0);
+            }
+        }
+
+        if (order == SortingOrder.desc) {
+            comparator = comparator.reversed();
+        }
+
+        return comparator;
     }
 }

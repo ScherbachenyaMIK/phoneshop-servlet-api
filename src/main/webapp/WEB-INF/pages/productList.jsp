@@ -8,12 +8,25 @@
   <p>
     Welcome to Expert-Soft training!
   </p>
+  <form>
+    <input name="searchingQuery" value="${param.searchingQuery}">
+    <button>Search</button>
+  </form>
   <table>
     <thead>
       <tr>
         <td>Image</td>
-        <td>Description</td>
-        <td class="price">Price</td>
+        <td>
+          Description
+          <tags:sortButton field="description" order="asc"/>
+          <tags:sortButton field="description" order="desc"/>
+        </td>
+        <td class="price">
+          Price
+          <tags:sortButton field="price" order="asc"/>
+          <tags:sortButton field="price" order="desc"/>
+        </td>
+        <td></td>
       </tr>
     </thead>
     <c:forEach var="product" items="${products}">
@@ -21,9 +34,31 @@
         <td>
           <img class="product-tile" src="${product.imageUrl}">
         </td>
-        <td>${product.description}</td>
+        <td>
+          <a href="${pageContext.servletContext.contextPath}/products/${product.id}">
+            ${product.description}
+          </a>
+        </td>
         <td class="price">
-          <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+          <a href="?sort=${param.sort}&order=${param.order}&searchingQuery=${param.searchingQuery}&price=${product.id}#price-${product.id}">
+            <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+          </a>
+        </td>
+        <td>
+          <c:if test="${product.id == param.price}">
+            <div class="price-history-form" id="price-${product.id}">
+              <div class="price-history-content">
+                <p>Price history: ${product.description}</p>
+                  <c:forEach var="history" items="${product.priceHistory}">
+                    <p>
+                      <fmt:formatDate value="${history.date}" pattern="dd MMM yyyy" />
+                      -
+                      <fmt:formatNumber value="${history.price}" type="currency" currencySymbol="${product.currency.symbol}" />
+                    </p>
+                  </c:forEach>
+              </div>
+            </div>
+          </c:if>
         </td>
       </tr>
     </c:forEach>

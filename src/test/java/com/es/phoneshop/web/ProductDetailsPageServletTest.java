@@ -13,10 +13,11 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ProductListPageServletTest {
+public class ProductDetailsPageServletTest {
     @Mock
     private HttpServletRequest request;
     @Mock
@@ -26,7 +27,7 @@ public class ProductListPageServletTest {
     @Mock
     private ServletConfig config;
 
-    private final ProductListPageServlet servlet = new ProductListPageServlet();
+    private final ProductDetailsPageServlet servlet = new ProductDetailsPageServlet();
 
     @Before
     public void setup() throws ServletException {
@@ -37,10 +38,12 @@ public class ProductListPageServletTest {
 
     @Test
     public void testDoGet() throws ServletException, IOException {
+        when(request.getPathInfo()).thenReturn("/1");
+
         servlet.doGet(request, response);
 
-        verify(request, times(3)).getParameter(anyString());
+        verify(request).getPathInfo();
+        verify(request).setAttribute(eq("product"), any());
         verify(requestDispatcher).forward(request, response);
-        verify(request).setAttribute(eq("products"), any());
     }
 }
