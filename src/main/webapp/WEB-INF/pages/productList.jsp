@@ -26,7 +26,7 @@
           <tags:sortButton field="price" order="asc"/>
           <tags:sortButton field="price" order="desc"/>
         </td>
-        <td></td>
+        <td style="border-bottom: none; border-right: none; border-top: none;"></td>
       </tr>
     </thead>
     <c:forEach var="product" items="${products}">
@@ -44,7 +44,7 @@
             <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
           </a>
         </td>
-        <td>
+        <td style="border-bottom: none; border-right: none; border-top: none;">
           <c:if test="${product.id == param.price}">
             <div class="price-history-form" id="price-${product.id}">
               <div class="price-history-content">

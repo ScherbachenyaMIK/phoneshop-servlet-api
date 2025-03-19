@@ -21,11 +21,6 @@ td {
   border : 1px solid gray;
   vertical-align: top;
 }
-tr td:last-of-type {
-  border-bottom: none;
-  border-right: none;
-  border-top: none;
-}
 .price {
   text-align: right;
 }
