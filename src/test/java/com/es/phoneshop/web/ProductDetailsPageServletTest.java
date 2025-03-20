@@ -3,6 +3,7 @@ package com.es.phoneshop.web;
 import com.es.phoneshop.cart.Cart;
 import com.es.phoneshop.cart.CartService;
 import com.es.phoneshop.cart.TooMuchQuantityException;
+import com.es.phoneshop.history.RecentlyViewedService;
 import com.es.phoneshop.model.product.PriceHistory;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
@@ -44,6 +45,8 @@ public class ProductDetailsPageServletTest {
     private Cart cart;
     @Mock
     private ProductDao arrayListProductDao;
+    @Mock
+    private RecentlyViewedService recentlyViewedService;
 
     private final ProductDetailsPageServlet servlet = new ProductDetailsPageServlet();
     private final Product product = new Product(
@@ -63,6 +66,7 @@ public class ProductDetailsPageServletTest {
         when(request.getPathInfo()).thenReturn("/1");
         when(cartService.getCart(request)).thenReturn(cart);
         when(arrayListProductDao.getProduct(1L)).thenReturn(product);
+        when(recentlyViewedService.getRecentlyViewedProducts(request)).thenReturn(any());
 
         servlet.init(config);
 
@@ -74,6 +78,10 @@ public class ProductDetailsPageServletTest {
                 .getDeclaredField("cartService");
         service.setAccessible(true);
         service.set(servlet, cartService);
+        Field recentlyService = ProductDetailsPageServlet.class
+                .getDeclaredField("recentlyViewedService");
+        recentlyService.setAccessible(true);
+        recentlyService.set(servlet, recentlyViewedService);
     }
 
     @Test

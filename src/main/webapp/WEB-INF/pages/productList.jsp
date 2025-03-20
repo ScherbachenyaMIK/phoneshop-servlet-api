@@ -63,4 +63,5 @@
       </tr>
     </c:forEach>
   </table>
+  <tags:recentlyViewedProducts/>
 </tags:master>

@@ -40,4 +40,5 @@
   <c:if test="${not empty param.message}">
     <p class="success-message">${param.message}</p>
   </c:if>
+  <tags:recentlyViewedProducts/>
 </tags:master>

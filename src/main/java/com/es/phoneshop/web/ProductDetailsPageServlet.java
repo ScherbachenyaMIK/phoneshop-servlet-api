@@ -4,7 +4,10 @@ import com.es.phoneshop.cart.Cart;
 import com.es.phoneshop.cart.CartService;
 import com.es.phoneshop.cart.DefaultCartService;
 import com.es.phoneshop.cart.TooMuchQuantityException;
+import com.es.phoneshop.history.DefaultRecentlyViewedService;
+import com.es.phoneshop.history.RecentlyViewedService;
 import com.es.phoneshop.model.product.ArrayListProductDao;
+import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -22,17 +25,27 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
     private CartService cartService;
 
+    private RecentlyViewedService recentlyViewedService;
+
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         arrayListProductDao = ArrayListProductDao.getInstance();
         cartService = DefaultCartService.getInstance();
+        recentlyViewedService = DefaultRecentlyViewedService.getInstance();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long id = parseProductId(request);
-        request.setAttribute("product", arrayListProductDao.getProduct(id));
+        Product product = arrayListProductDao.getProduct(id);
+
+        request.setAttribute("product", product);
+
+        recentlyViewedService.addToRecentlyViewed(
+                recentlyViewedService.getRecentlyViewedProducts(request),
+                product
+        );
 
         request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
     }
