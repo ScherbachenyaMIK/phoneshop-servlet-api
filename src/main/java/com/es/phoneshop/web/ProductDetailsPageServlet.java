@@ -1,5 +1,6 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.cart.Cart;
 import com.es.phoneshop.cart.CartService;
 import com.es.phoneshop.cart.DefaultCartService;
 import com.es.phoneshop.cart.TooMuchQuantityException;
@@ -52,8 +53,9 @@ public class ProductDetailsPageServlet extends HttpServlet {
             return;
         }
 
+        Cart cart = cartService.getCart(request);
         try {
-            cartService.add(id, quantity);
+            cartService.add(cart, id, quantity);
         } catch (TooMuchQuantityException e) {
             request.setAttribute("error", e);
 

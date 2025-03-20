@@ -1,7 +1,9 @@
 package com.es.phoneshop.cart;
 
-public interface CartService {
-    Cart getCart();
+import jakarta.servlet.http.HttpServletRequest;
 
-    void add(Long productId, int quantity) throws TooMuchQuantityException;
+public interface CartService {
+    Cart getCart(HttpServletRequest request);
+
+    void add(Cart cart, Long productId, int quantity) throws TooMuchQuantityException;
 }

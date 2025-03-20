@@ -3,6 +3,8 @@ package com.es.phoneshop.cart;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.PriceHistory;
 import com.es.phoneshop.model.product.Product;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -18,6 +20,9 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -25,8 +30,13 @@ import static org.mockito.Mockito.when;
 public class DefaultCartServiceTest {
     @Mock
     private ArrayListProductDao arrayListProductDao;
+    @Mock
+    private HttpServletRequest request;
+    @Mock
+    private HttpSession session;
 
     private static final CartService cartService = DefaultCartService.getInstance();
+    private static final Cart cart = new Cart();
     private static final Long id = 1L;
     private static final Product expected = new Product(1L,
             "sgs",
@@ -46,13 +56,15 @@ public class DefaultCartServiceTest {
         field.set(cartService, arrayListProductDao);
 
         when(arrayListProductDao.getProduct(id)).thenReturn(expected);
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute(anyString())).thenReturn(cart);
     }
 
     @Test
     public void testAddNewOnce() throws TooMuchQuantityException {
-        cartService.add(id, 2);
+        cartService.add(cart, id, 2);
 
-        Cart result = cartService.getCart();
+        Cart result = cartService.getCart(request);
 
         assertEquals(1, result.getItems().size());
         assertEquals(expected, result.getItems().get(0).getProduct());
@@ -61,9 +73,9 @@ public class DefaultCartServiceTest {
 
     @Test
     public void testAddUpdateQuantity() throws TooMuchQuantityException {
-        cartService.add(id, 2);
+        cartService.add(cart, id, 2);
 
-        Cart result = cartService.getCart();
+        Cart result = cartService.getCart(request);
 
         assertEquals(1, result.getItems().size());
         assertEquals(expected, result.getItems().get(0).getProduct());
@@ -73,7 +85,7 @@ public class DefaultCartServiceTest {
     @Test(expected = RuntimeException.class)
     public void testAddNewBigQuantity() {
         try {
-            cartService.add(id, 1000);
+            cartService.add(cart, id, 1000);
         } catch (TooMuchQuantityException e) {
             assertEquals(
                     "For product sgs the stock is 100 but requested 1000",
@@ -85,12 +97,30 @@ public class DefaultCartServiceTest {
     @Test(expected = RuntimeException.class)
     public void testUpdateBigQuantity() {
         try {
-            cartService.add(id, 98);
+            cartService.add(cart, id, 98);
         } catch (TooMuchQuantityException e) {
             assertEquals(
                     "For product sgs the stock is 100 but requested 102",
                     e.getMessage());
             throw new RuntimeException(e);
         }
+    }
+
+    @Test
+    public void testUpdateQuantityDifferentSessions() throws TooMuchQuantityException {
+        HttpServletRequest anotherRequest = mock(HttpServletRequest.class);
+        HttpSession anotherSession = mock(HttpSession.class);
+        when(anotherRequest.getSession()).thenReturn(anotherSession);
+        when(anotherSession.getAttribute(anyString())).thenReturn(null);
+
+        cartService.add(cart, id, 2);
+
+        Cart result1 = cartService.getCart(request);
+        Cart result2 = cartService.getCart(anotherRequest);
+
+        assertEquals(1, result1.getItems().size());
+        assertEquals(expected, result1.getItems().get(0).getProduct());
+        assertEquals(6, result1.getItems().get(0).getQuantity());
+        assertTrue(result2.getItems().isEmpty());
     }
 }

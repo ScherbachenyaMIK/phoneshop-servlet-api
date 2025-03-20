@@ -1,5 +1,6 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.cart.Cart;
 import com.es.phoneshop.cart.CartService;
 import com.es.phoneshop.cart.TooMuchQuantityException;
 import com.es.phoneshop.model.product.PriceHistory;
@@ -40,6 +41,8 @@ public class ProductDetailsPageServletTest {
     @Mock
     private CartService cartService;
     @Mock
+    private Cart cart;
+    @Mock
     private ProductDao arrayListProductDao;
 
     private final ProductDetailsPageServlet servlet = new ProductDetailsPageServlet();
@@ -58,6 +61,7 @@ public class ProductDetailsPageServletTest {
     public void setup() throws ServletException, NoSuchFieldException, IllegalAccessException {
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
         when(request.getPathInfo()).thenReturn("/1");
+        when(cartService.getCart(request)).thenReturn(cart);
         when(arrayListProductDao.getProduct(1L)).thenReturn(product);
 
         servlet.init(config);
@@ -152,7 +156,7 @@ public class ProductDetailsPageServletTest {
         when(request.getLocale()).thenReturn(new Locale("ru", "RU"));
         when(request.getParameter("quantity")).thenReturn("1001");
         doThrow(new TooMuchQuantityException("sgs", 1000, 1001))
-                .when(cartService).add(1L, 1001);
+                .when(cartService).add(cart,1L, 1001);
 
         servlet.doPost(request, response);
 
