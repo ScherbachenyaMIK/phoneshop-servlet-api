@@ -30,4 +30,14 @@
         <td>${product.stock}</td>
     </tbody>
   </table>
+  <form method="post" style="margin-top: 10px">
+    <input class="numeric-val ${not empty error ? 'error-input' : ''}" name="quantity" value="${not empty error ? param.quantity : 1}"/>
+    <button>Add to cart</button>
+  </form>
+  <c:if test="${not empty error}">
+    <p class="error-message">${error.message}</p>
+  </c:if>
+  <c:if test="${not empty param.message}">
+    <p class="success-message">${param.message}</p>
+  </c:if>
 </tags:master>

@@ -3,6 +3,7 @@ package com.es.phoneshop.cart;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
+import java.util.stream.IntStream;
 
 public class DefaultCartService implements CartService {
     private final Cart cart;
@@ -28,9 +29,33 @@ public class DefaultCartService implements CartService {
     }
 
     @Override
-    public void add(Long productId, int quantity) {
-        Product product = arrayListProductDao.getProduct(productId);
+    public void add(Long productId, int quantity) throws TooMuchQuantityException {
+        int index = IntStream.range(0, cart.getItems().size())
+                .filter(i -> productId.equals(
+                        cart.getItems().get(i).getProduct().getId()
+                ))
+                .findAny()
+                .orElse(-1);
 
-        cart.getItems().add(new CartItem(product, quantity));
+        if (index == -1) {
+            Product product = arrayListProductDao.getProduct(productId);
+            if (product.getStock() < quantity) {
+                throw new TooMuchQuantityException(product.getCode(), product.getStock(), quantity);
+            }
+            cart.getItems().add(new CartItem(product, quantity));
+            return;
+        }
+
+        CartItem item = cart.getItems().get(index);
+
+        if (item.getProduct().getStock() < item.getQuantity() + quantity) {
+            throw new TooMuchQuantityException(
+                    item.getProduct().getCode(),
+                    item.getProduct().getStock(),
+                    item.getQuantity() + quantity
+            );
+        }
+
+        item.setQuantity(item.getQuantity() + quantity);
     }
 }

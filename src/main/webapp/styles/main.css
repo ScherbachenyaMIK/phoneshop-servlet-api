@@ -24,6 +24,9 @@ td {
 .price {
   text-align: right;
 }
+.numeric-val {
+  text-align: right;
+}
 img.product-tile {
   max-width: 64px;
 }
@@ -49,6 +52,18 @@ footer {
 
 .price-history-content {
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.error-input {
+  border: 2px solid red;
+}
+
+.error-message {
+  color: red;
+}
+
+.success-message {
+  color: green;
 }
 
 /* Page specific styles */
