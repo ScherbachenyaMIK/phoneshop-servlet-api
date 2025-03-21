@@ -6,7 +6,6 @@ import com.es.phoneshop.model.product.ProductDao;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.stream.IntStream;
 
 public class DefaultCartService implements CartService {
     private static final String CART_SESSION_ATTRIBUTE = DefaultCartService.class.getName() + ".cart";
@@ -59,14 +58,12 @@ public class DefaultCartService implements CartService {
         lock.writeLock().lock();
 
         try {
-            int index = IntStream.range(0, cart.getItems().size())
-                    .filter(i -> productId.equals(
-                            cart.getItems().get(i).getProduct().getId()
-                    ))
+            CartItem item = cart.getItems().stream()
+                    .filter(i -> productId.equals(i.getProduct().getId()))
                     .findAny()
-                    .orElse(-1);
+                    .orElse(null);
 
-            if (index == -1) {
+            if (item == null) {
                 Product product = arrayListProductDao.getProduct(productId);
                 if (product.getStock() < quantity) {
                     throw new TooMuchQuantityException(
@@ -78,8 +75,6 @@ public class DefaultCartService implements CartService {
                 cart.getItems().add(new CartItem(product, quantity));
                 return;
             }
-
-            CartItem item = cart.getItems().get(index);
 
             if (item.getProduct().getStock() < item.getQuantity() + quantity) {
                 throw new TooMuchQuantityException(

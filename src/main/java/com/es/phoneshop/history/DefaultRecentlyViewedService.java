@@ -8,6 +8,8 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class DefaultRecentlyViewedService implements RecentlyViewedService {
+    private static final int MAX_RECENTLY_VIEWED_PRODUCTS = 3;
+
     private static final String RECENTLY_VIEWED_ATTRIBUTE = "recentlyViewed";
 
     private final ReadWriteLock lock;
@@ -64,8 +66,8 @@ public class DefaultRecentlyViewedService implements RecentlyViewedService {
 
             recentlyViewed.add(0, product);
 
-            if (recentlyViewed.size() > 3) {
-                recentlyViewed.remove(3);
+            if (recentlyViewed.size() > MAX_RECENTLY_VIEWED_PRODUCTS) {
+                recentlyViewed.remove(MAX_RECENTLY_VIEWED_PRODUCTS);
             }
         } finally {
             lock.writeLock().unlock();
