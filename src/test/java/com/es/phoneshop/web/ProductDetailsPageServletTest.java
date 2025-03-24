@@ -146,6 +146,34 @@ public class ProductDetailsPageServletTest {
     }
 
     @Test
+    public void testDoPostBadNumericQuantity2() throws ServletException, IOException {
+        when(request.getLocale()).thenReturn(Locale.US);
+        when(request.getParameter("quantity")).thenReturn("1.001");
+
+        servlet.doPost(request, response);
+
+        verify(request, times(2)).getPathInfo();
+        verify(request).getParameter("quantity");
+        verify(request).setAttribute(eq("error"), any());
+        verify(request).setAttribute(eq("product"), any());
+        verify(requestDispatcher).forward(request, response);
+    }
+
+    @Test
+    public void testDoPostBadNumericQuantity3() throws ServletException, IOException {
+        when(request.getLocale()).thenReturn(new Locale("ru", "RU"));
+        when(request.getParameter("quantity")).thenReturn("-1");
+
+        servlet.doPost(request, response);
+
+        verify(request, times(2)).getPathInfo();
+        verify(request).getParameter("quantity");
+        verify(request).setAttribute(eq("error"), any());
+        verify(request).setAttribute(eq("product"), any());
+        verify(requestDispatcher).forward(request, response);
+    }
+
+    @Test
     public void testDoPostEmptyQuantity() throws ServletException, IOException {
         when(request.getLocale()).thenReturn(new Locale("ru", "RU"));
         when(request.getParameter("quantity")).thenReturn("");

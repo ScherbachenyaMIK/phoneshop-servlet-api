@@ -58,7 +58,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
         Locale locale = request.getLocale();
 
         try {
-            quantity = parseQuantity(request.getParameter("quantity"), locale);
+            quantity = parseQuantity(request.getParameter("quantity").trim(), locale);
         } catch (IllegalArgumentException e) {
             request.setAttribute("error", e);
 
@@ -96,6 +96,14 @@ public class ProductDetailsPageServlet extends HttpServlet {
             Number number = numberFormat.parse(quantity, pos);
             if (pos.getIndex() < quantity.length()) {
                 throw new ParseException(quantity, pos.getIndex());
+            }
+
+            if (number.intValue() < 1) {
+                throw new IllegalArgumentException("Quantity must be a positive number");
+            }
+
+            if (Math.ceil(number.doubleValue()) != number.intValue()) {
+                throw new IllegalArgumentException("Quantity must be an integer");
             }
 
             return number.intValue();
