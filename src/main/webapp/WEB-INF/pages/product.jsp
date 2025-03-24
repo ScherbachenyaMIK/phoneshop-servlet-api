@@ -5,6 +5,9 @@
 
 <jsp:useBean id="product" type="com.es.phoneshop.model.product.Product" scope="request"/>
 <tags:master pageTitle="Product Details">
+  <c:if test="${not empty sessionScope['com.es.phoneshop.cart.DefaultCartService.cart']}">
+    <p>Cart: ${sessionScope['com.es.phoneshop.cart.DefaultCartService.cart'].items}</p>
+  </c:if>
   <p>
     ${product.description}
   </p>
@@ -30,4 +33,15 @@
         <td>${product.stock}</td>
     </tbody>
   </table>
+  <form method="post" style="margin-top: 10px">
+    <input class="numeric-val ${not empty error ? 'error-input' : ''}" name="quantity" value="${not empty error ? param.quantity : 1}"/>
+    <button>Add to cart</button>
+  </form>
+  <c:if test="${not empty error}">
+    <p class="error-message">${error.message}</p>
+  </c:if>
+  <c:if test="${not empty param.message and empty error}">
+    <p class="success-message">${param.message}</p>
+  </c:if>
+  <tags:recentlyViewedProducts/>
 </tags:master>

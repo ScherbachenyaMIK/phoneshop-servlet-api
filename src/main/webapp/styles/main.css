@@ -21,12 +21,10 @@ td {
   border : 1px solid gray;
   vertical-align: top;
 }
-tr td:last-of-type {
-  border-bottom: none;
-  border-right: none;
-  border-top: none;
-}
 .price {
+  text-align: right;
+}
+.numeric-val {
   text-align: right;
 }
 img.product-tile {
@@ -54,6 +52,18 @@ footer {
 
 .price-history-content {
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.error-input {
+  border: 2px solid red;
+}
+
+.error-message {
+  color: red;
+}
+
+.success-message {
+  color: green;
 }
 
 /* Page specific styles */
