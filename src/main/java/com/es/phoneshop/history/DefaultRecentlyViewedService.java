@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.IntStream;
 
 public class DefaultRecentlyViewedService implements RecentlyViewedService {
     private static final int MAX_RECENTLY_VIEWED_PRODUCTS = 3;
@@ -62,7 +63,16 @@ public class DefaultRecentlyViewedService implements RecentlyViewedService {
     public void addToRecentlyViewed(List<Product> recentlyViewed, Product product) {
         lock.writeLock().lock();
         try {
-            recentlyViewed.remove(product);
+            int index = IntStream.range(0, recentlyViewed.size())
+                    .filter(i ->
+                            product.getId().equals(recentlyViewed.get(i).getId())
+                    )
+                    .findAny()
+                    .orElse(-1);
+
+            if (index != -1) {
+                recentlyViewed.remove(index);
+            }
 
             recentlyViewed.add(0, product);
 
