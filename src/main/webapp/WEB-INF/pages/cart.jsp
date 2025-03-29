@@ -45,6 +45,9 @@
                   </c:if>
                   <input type="hidden" name="productId" value="${cartItem.product.id}"/>
                 </td>
+                <td>
+                  <button form="deleteCartItem" formaction="${pageContext.servletContext.contextPath}/cart/deleteCartItem/${cartItem.product.id}">Delete</button>
+                </td>
               </tr>
             </tbody>
           </c:forEach>
@@ -55,6 +58,8 @@
     <p>
       <button>Update</button>
     </p>
+  </form>
+  <form id="deleteCartItem" method="post">
   </form>
   <tags:recentlyViewedProducts/>
 </tags:master>

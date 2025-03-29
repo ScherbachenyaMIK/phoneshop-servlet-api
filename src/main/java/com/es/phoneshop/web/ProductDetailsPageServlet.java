@@ -9,6 +9,7 @@ import com.es.phoneshop.history.RecentlyViewedService;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
+import com.es.phoneshop.util.ProductIdParser;
 import com.es.phoneshop.util.QuantityParser;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -35,7 +36,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Long id = parseProductId(request);
+        Long id = ProductIdParser.parseProductId(request);
         Product product = arrayListProductDao.getProduct(id);
 
         request.setAttribute("product", product);
@@ -50,7 +51,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Long id = parseProductId(request);
+        Long id = ProductIdParser.parseProductId(request);
         int quantity;
 
         Locale locale = request.getLocale();
@@ -80,9 +81,5 @@ public class ProductDetailsPageServlet extends HttpServlet {
         String message = "Product added successfully";
 
         response.sendRedirect(request.getRequestURI() + "?message=" + message);
-    }
-
-    private Long parseProductId(HttpServletRequest request) {
-        return Long.valueOf(request.getPathInfo().substring(1));
     }
 }

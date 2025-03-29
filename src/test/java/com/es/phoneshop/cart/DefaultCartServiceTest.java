@@ -19,8 +19,7 @@ import org.junit.runners.MethodSorters;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -199,5 +198,44 @@ public class DefaultCartServiceTest {
         assertEquals(secondExpected, result.getItems().get(1).getProduct());
         assertEquals(2, result.getItems().get(0).getQuantity());
         assertEquals(8, result.getItems().get(1).getQuantity());
+    }
+
+    @Test
+    public void testDeletionExistingProduct() throws TooMuchQuantityException {
+        Long someId = 200L;
+        Product someProduct = new Product(200L,
+                "sgs",
+                "Samsung Galaxy S",
+                new BigDecimal(100),
+                Currency.getInstance("USD"),
+                100,
+                "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg",
+                List.of(new PriceHistory(Date.from(Instant.now().minusSeconds(2592000L * 3 * 3)), BigDecimal.valueOf(95)), new PriceHistory(Date.from(Instant.now().minusSeconds(2592000L * 3 * 2)), BigDecimal.valueOf(110)), new PriceHistory(Date.from(Instant.now().minusSeconds(2592000L * 3)), BigDecimal.valueOf(105))));
+
+        when(arrayListProductDao.getProduct(someId)).thenReturn(someProduct);
+
+        cartService.add(cart, someId, 8);
+
+        int firstCartSize = cartService.getCart(request).getItems().size();
+
+        cartService.delete(cart, someId);
+
+        Cart result = cartService.getCart(request);
+
+        assertEquals(firstCartSize - 1, result.getItems().size());
+        assertFalse(result.getItems().stream().map(CartItem::getProduct).toList().contains(someProduct));
+    }
+
+    @Test
+    public void testDeletionNotExistingProduct() {
+        Long someId = 200L;
+
+        int firstCartSize = cartService.getCart(request).getItems().size();
+
+        cartService.delete(cart, someId);
+
+        Cart result = cartService.getCart(request);
+
+        assertEquals(firstCartSize, result.getItems().size());
     }
 }
