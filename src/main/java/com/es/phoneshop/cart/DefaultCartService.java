@@ -58,21 +58,10 @@ public class DefaultCartService implements CartService {
         lock.writeLock().lock();
 
         try {
-            CartItem item = cart.getItems().stream()
-                    .filter(i -> productId.equals(i.getProduct().getId()))
-                    .findAny()
-                    .orElse(null);
+            CartItem item = getItemById(cart, productId);
 
             if (item == null) {
-                Product product = arrayListProductDao.getProduct(productId);
-                if (product.getStock() < quantity) {
-                    throw new TooMuchQuantityException(
-                            product.getCode(),
-                            product.getStock(),
-                            quantity
-                    );
-                }
-                cart.getItems().add(new CartItem(product, quantity));
+                addNewItemToCart(cart, productId, quantity);
                 return;
             }
 
@@ -88,5 +77,50 @@ public class DefaultCartService implements CartService {
         } finally {
             lock.writeLock().unlock();
         }
+    }
+
+    @Override
+    public void update(Cart cart, Long productId, int quantity) throws TooMuchQuantityException {
+        lock.writeLock().lock();
+
+        try {
+            CartItem item = getItemById(cart, productId);
+
+            if (item == null) {
+                addNewItemToCart(cart, productId, quantity);
+                return;
+            }
+
+            if (item.getProduct().getStock() < quantity) {
+                throw new TooMuchQuantityException(
+                        item.getProduct().getCode(),
+                        item.getProduct().getStock(),
+                        quantity
+                );
+            }
+
+            item.setQuantity(quantity);
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    private CartItem getItemById(Cart cart, Long productId) {
+        return cart.getItems().stream()
+                .filter(i -> productId.equals(i.getProduct().getId()))
+                .findAny()
+                .orElse(null);
+    }
+
+    private void addNewItemToCart(Cart cart, Long productId, int quantity) throws TooMuchQuantityException {
+        Product product = arrayListProductDao.getProduct(productId);
+        if (product.getStock() < quantity) {
+            throw new TooMuchQuantityException(
+                    product.getCode(),
+                    product.getStock(),
+                    quantity
+            );
+        }
+        cart.getItems().add(new CartItem(product, quantity));
     }
 }

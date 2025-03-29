@@ -9,15 +9,13 @@ import com.es.phoneshop.history.RecentlyViewedService;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
+import com.es.phoneshop.util.QuantityParser;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.text.ParsePosition;
 import java.util.Locale;
 
 public class ProductDetailsPageServlet extends HttpServlet {
@@ -58,7 +56,10 @@ public class ProductDetailsPageServlet extends HttpServlet {
         Locale locale = request.getLocale();
 
         try {
-            quantity = parseQuantity(request.getParameter("quantity").trim(), locale);
+            quantity = QuantityParser.parseQuantity(
+                    request.getParameter("quantity").trim(),
+                    locale
+            );
         } catch (IllegalArgumentException e) {
             request.setAttribute("error", e);
 
@@ -83,32 +84,5 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
     private Long parseProductId(HttpServletRequest request) {
         return Long.valueOf(request.getPathInfo().substring(1));
-    }
-
-    private int parseQuantity(String quantity, Locale locale) throws IllegalArgumentException {
-        if (quantity.isEmpty()) {
-            throw new IllegalArgumentException("Quantity must not be empty");
-        }
-
-        ParsePosition pos = new ParsePosition(0);
-        NumberFormat numberFormat = NumberFormat.getInstance(locale);
-        try {
-            Number number = numberFormat.parse(quantity, pos);
-            if (pos.getIndex() < quantity.length()) {
-                throw new ParseException(quantity, pos.getIndex());
-            }
-
-            if (number.intValue() < 1) {
-                throw new IllegalArgumentException("Quantity must be a positive number");
-            }
-
-            if (Math.ceil(number.doubleValue()) != number.intValue()) {
-                throw new IllegalArgumentException("Quantity must be an integer");
-            }
-
-            return number.intValue();
-        } catch (ParseException e) {
-            throw new IllegalArgumentException("Quantity must be an integer", e);
-        }
     }
 }
