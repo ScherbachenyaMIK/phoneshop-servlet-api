@@ -12,8 +12,8 @@
     <p class="success-message">${param.message}</p>
   </c:if>
   <c:if test="${not empty errors}">
-      <p class="error-message">Errors were found</p>
-    </c:if>
+    <p class="error-message">Errors were found</p>
+  </c:if>
   <form method="post">
     <c:choose>
       <c:when test="${not empty cart.items}">
