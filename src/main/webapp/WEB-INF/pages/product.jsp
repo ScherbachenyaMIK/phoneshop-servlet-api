@@ -5,8 +5,9 @@
 
 <jsp:useBean id="product" type="com.es.phoneshop.model.product.Product" scope="request"/>
 <tags:master pageTitle="Product Details">
-  <c:if test="${not empty sessionScope['com.es.phoneshop.cart.DefaultCartService.cart']}">
-    <p>Cart: ${sessionScope['com.es.phoneshop.cart.DefaultCartService.cart'].items}</p>
+  <c:set var="cart" value="${sessionScope['com.es.phoneshop.cart.DefaultCartService.cart']}"/>
+  <c:if test="${not empty cart}">
+    <p>Cart: {${cart.items}, ${cart.totalQuantity}, ${cart.totalCost}}</p>
   </c:if>
   <p>
     ${product.description}

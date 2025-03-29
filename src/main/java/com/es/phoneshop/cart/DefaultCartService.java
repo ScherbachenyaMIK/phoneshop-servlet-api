@@ -4,6 +4,7 @@ import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
 import jakarta.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -62,6 +63,8 @@ public class DefaultCartService implements CartService {
 
             if (item == null) {
                 addNewItemToCart(cart, productId, quantity);
+                recalculateTotalQuantity(cart);
+                recalculateTotalCost(cart);
                 return;
             }
 
@@ -74,6 +77,8 @@ public class DefaultCartService implements CartService {
             }
 
             item.setQuantity(item.getQuantity() + quantity);
+            recalculateTotalQuantity(cart);
+            recalculateTotalCost(cart);
         } finally {
             lock.writeLock().unlock();
         }
@@ -88,6 +93,8 @@ public class DefaultCartService implements CartService {
 
             if (item == null) {
                 addNewItemToCart(cart, productId, quantity);
+                recalculateTotalQuantity(cart);
+                recalculateTotalCost(cart);
                 return;
             }
 
@@ -100,6 +107,8 @@ public class DefaultCartService implements CartService {
             }
 
             item.setQuantity(quantity);
+            recalculateTotalQuantity(cart);
+            recalculateTotalCost(cart);
         } finally {
             lock.writeLock().unlock();
         }
@@ -111,6 +120,8 @@ public class DefaultCartService implements CartService {
 
         try {
             cart.getItems().removeIf(item -> productId.equals(item.getProduct().getId()));
+            recalculateTotalQuantity(cart);
+            recalculateTotalCost(cart);
         } finally {
             lock.writeLock().unlock();
         }
@@ -133,5 +144,20 @@ public class DefaultCartService implements CartService {
             );
         }
         cart.getItems().add(new CartItem(product, quantity));
+    }
+
+    private void recalculateTotalQuantity(Cart cart) {
+        cart.setTotalQuantity(cart.getItems().stream().mapToInt(CartItem::getQuantity).sum());
+    }
+
+    private void recalculateTotalCost(Cart cart) {
+        cart.setTotalCost(
+                cart.getItems().stream()
+                        .map(item ->
+                                item.getProduct().getPrice()
+                                        .multiply(BigDecimal.valueOf(item.getQuantity()))
+                        )
+                        .reduce(BigDecimal.ZERO, BigDecimal::add)
+        );
     }
 }

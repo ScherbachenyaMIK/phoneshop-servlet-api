@@ -238,4 +238,37 @@ public class DefaultCartServiceTest {
 
         assertEquals(firstCartSize, result.getItems().size());
     }
+
+    @Test
+    public void testAddFirstRecalculation() throws TooMuchQuantityException {
+        Currency usd = Currency.getInstance("USD");
+
+        List<Product> products = List.of(
+                new Product(5L, "sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg", List.of(new PriceHistory(Date.from(Instant.now().minusSeconds(2592000L * 3 * 3)), BigDecimal.valueOf(95)), new PriceHistory(Date.from(Instant.now().minusSeconds(2592000L * 3 * 2)), BigDecimal.valueOf(110)), new PriceHistory(Date.from(Instant.now().minusSeconds(2592000L * 3)), BigDecimal.valueOf(105)))),
+                new Product(6L, "sgs2", "Samsung Galaxy S II", new BigDecimal(200), usd, 5, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20II.jpg", List.of(new PriceHistory(Date.from(Instant.now().minusSeconds(2592000L * 3 * 3)), BigDecimal.valueOf(195)), new PriceHistory(Date.from(Instant.now().minusSeconds(2592000L * 3 * 2)), BigDecimal.valueOf(210)), new PriceHistory(Date.from(Instant.now().minusSeconds(2592000L * 3)), BigDecimal.valueOf(205)))),
+                new Product(7L, "sgs3", "Samsung Galaxy S III", new BigDecimal(300), usd, 5, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20III.jpg", List.of(new PriceHistory(Date.from(Instant.now().minusSeconds(2592000L * 3 * 3)), BigDecimal.valueOf(295)), new PriceHistory(Date.from(Instant.now().minusSeconds(2592000L * 3 * 2)), BigDecimal.valueOf(310)), new PriceHistory(Date.from(Instant.now().minusSeconds(2592000L * 3)), BigDecimal.valueOf(305))))
+        );
+
+        when(arrayListProductDao.getProduct(5L)).thenReturn(products.get(0));
+        when(arrayListProductDao.getProduct(6L)).thenReturn(products.get(1));
+        when(arrayListProductDao.getProduct(7L)).thenReturn(products.get(2));
+
+        cartService.add(cart, 5L, 1);
+        cartService.add(cart, 6L, 2);
+        cartService.add(cart, 7L, 3);
+
+        assertEquals(6, cart.getTotalQuantity());
+        assertEquals(BigDecimal.valueOf(1400), cart.getTotalCost());
+
+        cartService.delete(cart, 7L);
+
+        assertEquals(3, cart.getTotalQuantity());
+        assertEquals(BigDecimal.valueOf(500), cart.getTotalCost());
+
+        cartService.delete(cart, 6L);
+        cartService.delete(cart, 5L);
+
+        assertEquals(0, cart.getTotalQuantity());
+        assertEquals(BigDecimal.ZERO, cart.getTotalCost());
+    }
 }

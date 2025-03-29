@@ -51,6 +51,13 @@
               </tr>
             </tbody>
           </c:forEach>
+          <tr>
+            <td></td>
+            <td></td>
+            <td>Total cost: ${cart.totalCost}</td>
+            <td>Total quantity: ${cart.totalQuantity}</td>
+            <td></td>
+          </tr>
         </table>
       </c:when>
       <c:otherwise>Cart is empty</c:otherwise>
