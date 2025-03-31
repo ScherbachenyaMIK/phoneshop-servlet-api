@@ -54,8 +54,14 @@
           <tr>
             <td></td>
             <td></td>
-            <td>Total cost: ${cart.totalCost}</td>
-            <td>Total quantity: ${cart.totalQuantity}</td>
+            <td>
+              <fmt:formatNumber value="${cart.totalCost}" type="currency" currencyCode="${cart.items[0].product.currency}" var="totalCost"/>
+              Total cost: ${totalCost}
+            </td>
+            <td>
+              <fmt:formatNumber value="${cart.totalQuantity}" var="totalQuantity"/>
+              Total quantity: ${totalQuantity}
+            </td>
             <td></td>
           </tr>
         </table>
