@@ -4,6 +4,7 @@ import com.es.phoneshop.cart.Cart;
 import com.es.phoneshop.cart.CartService;
 import com.es.phoneshop.cart.DefaultCartService;
 import com.es.phoneshop.cart.TooMuchQuantityException;
+import com.es.phoneshop.common.Messages;
 import com.es.phoneshop.history.DefaultRecentlyViewedService;
 import com.es.phoneshop.history.RecentlyViewedService;
 import com.es.phoneshop.model.product.ArrayListProductDao;
@@ -20,6 +21,14 @@ import java.io.IOException;
 import java.util.Locale;
 
 public class ProductDetailsPageServlet extends HttpServlet {
+    private static final String PRODUCT_ATTRIBUTE_NAME = "product";
+
+    private static final String QUANTITY_ATTRIBUTE_NAME = "quantity";
+
+    private static final String ERROR_ATTRIBUTE_NAME = "error";
+
+    private static final String JSP_LOCATION_PATH = "/WEB-INF/pages/product.jsp";
+
     private ProductDao arrayListProductDao;
 
     private CartService cartService;
@@ -39,47 +48,47 @@ public class ProductDetailsPageServlet extends HttpServlet {
         Long id = ProductIdParser.parseProductId(request);
         Product product = arrayListProductDao.getProduct(id);
 
-        request.setAttribute("product", product);
+        request.setAttribute(PRODUCT_ATTRIBUTE_NAME, product);
 
         recentlyViewedService.addToRecentlyViewed(
                 recentlyViewedService.getRecentlyViewedProducts(request),
                 product
         );
 
-        request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
+        request.getRequestDispatcher(JSP_LOCATION_PATH).forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Long id = ProductIdParser.parseProductId(request);
-        int quantity;
-
-        Locale locale = request.getLocale();
+        Cart cart = cartService.getCart(request);
 
         try {
-            quantity = QuantityParser.parseQuantity(
-                    request.getParameter("quantity").trim(),
+            processProductUpdate(
+                    ProductIdParser.parseProductId(request),
+                    request.getLocale(),
+                    request.getParameter(QUANTITY_ATTRIBUTE_NAME).trim(),
+                    cart
+            );
+        } catch (IllegalArgumentException | TooMuchQuantityException e) {
+            request.setAttribute(ERROR_ATTRIBUTE_NAME, e);
+
+            doGet(request, response);
+            return;
+        }
+
+        response.sendRedirect(request.getRequestURI()
+                + "?message="
+                + Messages.PRODUCT_ADDED_TO_CART_SUCCESS
+        );
+    }
+
+    private void processProductUpdate(Long productId, Locale locale, String quantityStr, Cart cart)
+            throws IllegalArgumentException, TooMuchQuantityException {
+        int quantity = QuantityParser.parseQuantity(
+                    quantityStr,
                     locale
             );
-        } catch (IllegalArgumentException e) {
-            request.setAttribute("error", e);
 
-            doGet(request, response);
-            return;
-        }
-
-        Cart cart = cartService.getCart(request);
-        try {
-            cartService.add(cart, id, quantity);
-        } catch (TooMuchQuantityException e) {
-            request.setAttribute("error", e);
-
-            doGet(request, response);
-            return;
-        }
-
-        String message = "Product added successfully";
-
-        response.sendRedirect(request.getRequestURI() + "?message=" + message);
+        cartService.add(cart, productId, quantity);
     }
 }

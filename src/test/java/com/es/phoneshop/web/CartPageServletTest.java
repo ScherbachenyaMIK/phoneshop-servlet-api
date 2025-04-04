@@ -68,7 +68,7 @@ public class CartPageServletTest {
         servlet.doPost(request, response);
 
         verify(request, times(2)).getParameterValues(any());
-        verify(cartService, times(3)).getCart(request);
+        verify(cartService, times(1)).getCart(request);
         verify(cartService, times(3)).update(eq(cart), any(), anyInt());
         verify(response).sendRedirect(anyString());
     }
@@ -82,10 +82,18 @@ public class CartPageServletTest {
         servlet.doPost(request, response);
 
         verify(request, times(2)).getParameterValues(any());
-        verify(cartService, times(4)).getCart(request);
+        verify(cartService, times(2)).getCart(request);
         verify(cartService, times(2)).update(eq(cart), any(), anyInt());
         verify(request).setAttribute(eq("errors"), any());
         verify(request).setAttribute(eq("cart"), any());
         verify(requestDispatcher).forward(request, response);
+    }
+
+    @Test
+    public void testDoPostEmptyCart() throws ServletException, IOException {
+        servlet.doPost(request, response);
+
+        verify(request).getRequestURI();
+        verify(response).sendRedirect(null);
     }
 }

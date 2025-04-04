@@ -11,6 +11,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class MiniCartServlet extends HttpServlet {
+    private static final String CART_ATTRIBUTE_NAME = "cart";
+
+    private static final String JSP_LOCATION_PATH = "/WEB-INF/pages/miniCart.jsp";
+
+
     private CartService cartService;
 
     @Override
@@ -23,9 +28,9 @@ public class MiniCartServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Cart cart = cartService.getCart(request);
 
-        request.setAttribute("cart", cart);
+        request.setAttribute(CART_ATTRIBUTE_NAME, cart);
 
-        request.getRequestDispatcher("/WEB-INF/pages/miniCart.jsp").include(request, response);
+        request.getRequestDispatcher(JSP_LOCATION_PATH).include(request, response);
     }
 
     @Override

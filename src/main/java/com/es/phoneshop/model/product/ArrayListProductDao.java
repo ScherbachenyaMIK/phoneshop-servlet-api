@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class ArrayListProductDao implements ProductDao {
+    private static final String PRODUCT_NOT_FOUND_MESSAGE = "Product with id %d not found.";
+
     private List<Product> data;
 
     private long maxId;
@@ -41,7 +43,7 @@ public class ArrayListProductDao implements ProductDao {
                     .filter(item -> id.equals(item.getId()))
                     .findAny()
                     .orElseThrow(() ->
-                            new NoSuchElementException("Product with id " + id + " not found.")
+                            new NoSuchElementException(String.format(PRODUCT_NOT_FOUND_MESSAGE, id))
                     );
         } finally {
             lock.readLock().unlock();
@@ -122,7 +124,7 @@ public class ArrayListProductDao implements ProductDao {
                 lock.writeLock().unlock();
             }
         } else {
-            throw new NoSuchElementException("Product with id " + id + " not found.");
+            throw new NoSuchElementException(String.format(PRODUCT_NOT_FOUND_MESSAGE, id));
         }
     }
 
