@@ -1,4 +1,4 @@
-package com.es.phoneshop.cart;
+package com.es.phoneshop.model.cart;
 
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.PriceHistory;
@@ -54,7 +54,7 @@ public class DefaultCartServiceTest {
         field.setAccessible(true);
         field.set(cartService, arrayListProductDao);
 
-        when(arrayListProductDao.getProduct(id)).thenReturn(expected);
+        when(arrayListProductDao.getById(id)).thenReturn(expected);
         when(request.getSession()).thenReturn(session);
         when(session.getAttribute(anyString())).thenReturn(cart);
     }
@@ -187,7 +187,7 @@ public class DefaultCartServiceTest {
                 "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg",
                 List.of(new PriceHistory(Date.from(Instant.now().minusSeconds(2592000L * 3 * 3)), BigDecimal.valueOf(95)), new PriceHistory(Date.from(Instant.now().minusSeconds(2592000L * 3 * 2)), BigDecimal.valueOf(110)), new PriceHistory(Date.from(Instant.now().minusSeconds(2592000L * 3)), BigDecimal.valueOf(105))));
 
-        when(arrayListProductDao.getProduct(secondId)).thenReturn(secondExpected);
+        when(arrayListProductDao.getById(secondId)).thenReturn(secondExpected);
 
         cartService.update(cart, secondId, 8);
 
@@ -212,7 +212,7 @@ public class DefaultCartServiceTest {
                 "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg",
                 List.of(new PriceHistory(Date.from(Instant.now().minusSeconds(2592000L * 3 * 3)), BigDecimal.valueOf(95)), new PriceHistory(Date.from(Instant.now().minusSeconds(2592000L * 3 * 2)), BigDecimal.valueOf(110)), new PriceHistory(Date.from(Instant.now().minusSeconds(2592000L * 3)), BigDecimal.valueOf(105))));
 
-        when(arrayListProductDao.getProduct(someId)).thenReturn(someProduct);
+        when(arrayListProductDao.getById(someId)).thenReturn(someProduct);
 
         cartService.add(cart, someId, 8);
 
@@ -249,9 +249,9 @@ public class DefaultCartServiceTest {
                 new Product(7L, "sgs3", "Samsung Galaxy S III", new BigDecimal(300), usd, 5, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20III.jpg", List.of(new PriceHistory(Date.from(Instant.now().minusSeconds(2592000L * 3 * 3)), BigDecimal.valueOf(295)), new PriceHistory(Date.from(Instant.now().minusSeconds(2592000L * 3 * 2)), BigDecimal.valueOf(310)), new PriceHistory(Date.from(Instant.now().minusSeconds(2592000L * 3)), BigDecimal.valueOf(305))))
         );
 
-        when(arrayListProductDao.getProduct(5L)).thenReturn(products.get(0));
-        when(arrayListProductDao.getProduct(6L)).thenReturn(products.get(1));
-        when(arrayListProductDao.getProduct(7L)).thenReturn(products.get(2));
+        when(arrayListProductDao.getById(5L)).thenReturn(products.get(0));
+        when(arrayListProductDao.getById(6L)).thenReturn(products.get(1));
+        when(arrayListProductDao.getById(7L)).thenReturn(products.get(2));
 
         cartService.add(cart, 5L, 1);
         cartService.add(cart, 6L, 2);

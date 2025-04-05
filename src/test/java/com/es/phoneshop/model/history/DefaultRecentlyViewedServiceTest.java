@@ -1,4 +1,4 @@
-package com.es.phoneshop.history;
+package com.es.phoneshop.model.history;
 
 import com.es.phoneshop.model.product.PriceHistory;
 import com.es.phoneshop.model.product.Product;

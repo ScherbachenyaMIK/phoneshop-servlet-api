@@ -3,7 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
-<jsp:useBean id="cart" type="com.es.phoneshop.cart.Cart" scope="request"/>
+<jsp:useBean id="cart" type="com.es.phoneshop.model.cart.Cart" scope="request"/>
 <c:choose>
   <c:when test="${not empty cart and not empty cart.items}">
     <fmt:formatNumber value="${cart.totalCost}" type="currency" currencyCode="${cart.items[0].product.currency}" var="totalCost"/>

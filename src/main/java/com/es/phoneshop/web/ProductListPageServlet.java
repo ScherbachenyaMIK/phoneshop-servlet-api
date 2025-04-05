@@ -1,10 +1,10 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.cart.Cart;
-import com.es.phoneshop.cart.CartService;
-import com.es.phoneshop.cart.DefaultCartService;
-import com.es.phoneshop.cart.TooMuchQuantityException;
 import com.es.phoneshop.common.Messages;
+import com.es.phoneshop.model.cart.Cart;
+import com.es.phoneshop.model.cart.CartService;
+import com.es.phoneshop.model.cart.DefaultCartService;
+import com.es.phoneshop.model.cart.TooMuchQuantityException;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.ProductDao;
 import com.es.phoneshop.model.product.SortingField;

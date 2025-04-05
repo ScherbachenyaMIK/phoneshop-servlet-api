@@ -1,12 +1,12 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.cart.Cart;
-import com.es.phoneshop.cart.CartService;
-import com.es.phoneshop.cart.DefaultCartService;
-import com.es.phoneshop.cart.TooMuchQuantityException;
 import com.es.phoneshop.common.Messages;
-import com.es.phoneshop.history.DefaultRecentlyViewedService;
-import com.es.phoneshop.history.RecentlyViewedService;
+import com.es.phoneshop.model.cart.Cart;
+import com.es.phoneshop.model.cart.CartService;
+import com.es.phoneshop.model.cart.DefaultCartService;
+import com.es.phoneshop.model.cart.TooMuchQuantityException;
+import com.es.phoneshop.model.history.DefaultRecentlyViewedService;
+import com.es.phoneshop.model.history.RecentlyViewedService;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
@@ -46,7 +46,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long id = ProductIdParser.parseProductId(request);
-        Product product = arrayListProductDao.getProduct(id);
+        Product product = arrayListProductDao.getById(id);
 
         request.setAttribute(PRODUCT_ATTRIBUTE_NAME, product);
 
