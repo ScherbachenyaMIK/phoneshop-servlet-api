@@ -271,4 +271,13 @@ public class DefaultCartServiceTest {
         assertEquals(0, cart.getTotalQuantity());
         assertEquals(BigDecimal.ZERO, cart.getTotalCost());
     }
+
+    @Test
+    public void testZeroItems() {
+        cartService.clear(cart);
+
+        assertTrue(cart.getItems().isEmpty());
+        assertEquals(0, cart.getTotalQuantity());
+        assertEquals(BigDecimal.ZERO, cart.getTotalCost());
+    }
 }

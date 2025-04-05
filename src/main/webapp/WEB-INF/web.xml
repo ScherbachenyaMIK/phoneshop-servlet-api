@@ -67,8 +67,17 @@
     <url-pattern>/checkout</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>orderOverview</servlet-name>
+    <servlet-class>com.es.phoneshop.web.OrderOverviewPageServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>orderOverview</servlet-name>
+    <url-pattern>/order/overview/*</url-pattern>
+  </servlet-mapping>
+
   <error-page>
-    <location>/WEB-INF/pages/errorProductNotFound.jsp</location>
+    <location>/WEB-INF/pages/errorPageNotFound.jsp</location>
     <exception-type>java.util.NoSuchElementException</exception-type>
   </error-page>
 

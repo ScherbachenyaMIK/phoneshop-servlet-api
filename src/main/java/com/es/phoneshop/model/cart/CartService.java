@@ -10,4 +10,6 @@ public interface CartService {
     void update(Cart cart, Long productId, int quantity) throws TooMuchQuantityException;
 
     void delete(Cart cart, Long productId);
+
+    void clear(Cart cart);
 }

@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -70,6 +71,29 @@ public class ArrayListOrderDaoTest {
         Long id = 3L;
 
         orderDao.getById(id);
+    }
+
+    @Test
+    public void testSecureOrder() {
+        Long id = 1L;
+        String secureId = UUID.randomUUID().toString();
+
+        Order result1 = orderDao.getById(id);
+        result1.setSecureId(secureId);
+
+        Order result2 = orderDao.getBySecureId(secureId);
+
+        assertEquals(result1, result2);
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void testSecureOrderNotFound() {
+        Long id = 1L;
+
+        Order result1 = orderDao.getById(id);
+        result1.setSecureId("abc");
+
+        orderDao.getBySecureId("cba");
     }
 
     public static Order createFirstOrder() {

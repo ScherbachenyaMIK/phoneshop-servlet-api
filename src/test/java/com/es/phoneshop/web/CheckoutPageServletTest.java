@@ -84,6 +84,7 @@ public class CheckoutPageServletTest {
         servlet.doPost(request, response);
 
         verify(orderService).placeOrder(order);
+        verify(cartService).clear(cart);
         verify(response).sendRedirect(anyString());
     }
 
@@ -102,6 +103,7 @@ public class CheckoutPageServletTest {
         servlet.doPost(request, response);
 
         verify(orderService).placeOrder(order);
+        verify(cartService).clear(cart);
         verify(response).sendRedirect(anyString());
     }
 

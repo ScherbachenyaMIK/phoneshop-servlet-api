@@ -4,7 +4,7 @@ import com.es.phoneshop.common.Messages;
 import com.es.phoneshop.model.cart.Cart;
 import com.es.phoneshop.model.cart.CartService;
 import com.es.phoneshop.model.cart.DefaultCartService;
-import com.es.phoneshop.util.ProductIdParser;
+import com.es.phoneshop.util.IdParser;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -23,7 +23,7 @@ public class DeleteCartItemServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Long id = ProductIdParser.parseProductId(request);
+        Long id = IdParser.parseId(request);
 
         Cart cart = cartService.getCart(request);
         cartService.delete(cart, id);

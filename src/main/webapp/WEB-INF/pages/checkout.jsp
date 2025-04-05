@@ -19,18 +19,18 @@
           <th>Quantity</th>
         </tr>
       </thead>
-      <c:forEach var="cartItem" items="${cart.items}" varStatus="status">
+      <c:forEach var="orderItem" items="${order.items}" varStatus="status">
         <tbody>
           <tr>
             <td>
-              <img class="product-tile" src="${cartItem.product.imageUrl}">
+              <img class="product-tile" src="${orderItem.product.imageUrl}">
             </td>
-            <td>${cartItem.product.description}</td>
+            <td>${orderItem.product.description}</td>
             <td class="price">
-              <fmt:formatNumber value="${cartItem.product.price}" type="currency" currencySymbol="${cartItem.product.currency.symbol}"/>
+              <fmt:formatNumber value="${orderItem.product.price}" type="currency" currencySymbol="${orderItem.product.currency.symbol}"/>
             </td>
             <td class="numeric-val">
-              <fmt:formatNumber value="${cartItem.quantity}"/>
+              <fmt:formatNumber value="${orderItem.quantity}"/>
           </tr>
         </tbody>
       </c:forEach>
@@ -38,7 +38,7 @@
         <td></td>
         <td></td>
         <td>
-          <fmt:formatNumber value="${order.subtotal}" type="currency" currencyCode="${cart.items[0].product.currency}" var="subtotal"/>
+          <fmt:formatNumber value="${order.subtotal}" type="currency" currencyCode="${order.items[0].product.currency}" var="subtotal"/>
           Subtotal: ${subtotal}
         </td>
         <td>
@@ -50,7 +50,7 @@
         <td></td>
         <td></td>
         <td>
-          <fmt:formatNumber value="${order.deliveryCost}" type="currency" currencyCode="${cart.items[0].product.currency}" var="deliveryCost"/>
+          <fmt:formatNumber value="${order.deliveryCost}" type="currency" currencyCode="${order.items[0].product.currency}" var="deliveryCost"/>
           Delivery cost: ${deliveryCost}
         </td>
         <td></td>
@@ -59,7 +59,7 @@
         <td></td>
         <td></td>
         <td>
-          <fmt:formatNumber value="${order.totalCost}" type="currency" currencyCode="${cart.items[0].product.currency}" var="totalCost"/>
+          <fmt:formatNumber value="${order.totalCost}" type="currency" currencyCode="${order.items[0].product.currency}" var="totalCost"/>
           Total cost: ${totalCost}
         </td>
         <td></td>

@@ -10,7 +10,7 @@ import com.es.phoneshop.model.history.RecentlyViewedService;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
-import com.es.phoneshop.util.ProductIdParser;
+import com.es.phoneshop.util.IdParser;
 import com.es.phoneshop.util.QuantityParser;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -45,7 +45,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Long id = ProductIdParser.parseProductId(request);
+        Long id = IdParser.parseId(request);
         Product product = arrayListProductDao.getById(id);
 
         request.setAttribute(PRODUCT_ATTRIBUTE_NAME, product);
@@ -64,7 +64,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
         try {
             processProductUpdate(
-                    ProductIdParser.parseProductId(request),
+                    IdParser.parseId(request),
                     request.getLocale(),
                     request.getParameter(QUANTITY_ATTRIBUTE_NAME).trim(),
                     cart
