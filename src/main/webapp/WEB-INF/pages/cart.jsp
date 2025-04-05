@@ -3,17 +3,13 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
-<jsp:useBean id="cart" type="com.es.phoneshop.cart.Cart" scope="request"/>
+<jsp:useBean id="cart" type="com.es.phoneshop.model.cart.Cart" scope="request"/>
 <tags:master pageTitle="Cart">
   <h1>
     Cart
   </h1>
-  <c:if test="${not empty param.message and empty errors}">
-    <p class="success-message">${param.message}</p>
-  </c:if>
-  <c:if test="${not empty errors}">
-    <p class="error-message">Errors were found</p>
-  </c:if>
+  <tags:successDisplaying error="${errors}"/>
+  <tags:errorDisplaying error="${errors}"/>
   <form method="post">
     <c:choose>
       <c:when test="${not empty cart.items}">
@@ -72,7 +68,11 @@
       <button>Update</button>
     </p>
   </form>
-  <form id="deleteCartItem" method="post">
-  </form>
+  <form id="deleteCartItem" method="post"></form>
+  <c:if test="${not empty cart.items}">
+    <form action="${pageContext.servletContext.contextPath}/checkout">
+      <button>Checkout</button>
+    </form>
+  </c:if>
   <tags:recentlyViewedProducts/>
 </tags:master>

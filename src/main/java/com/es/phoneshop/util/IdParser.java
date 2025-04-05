@@ -2,8 +2,8 @@ package com.es.phoneshop.util;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-public class ProductIdParser {
-    public static Long parseProductId(HttpServletRequest request) {
+public class IdParser {
+    public static Long parseId(HttpServletRequest request) {
         return Long.valueOf(request.getPathInfo().substring(1));
     }
 }

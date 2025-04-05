@@ -1,4 +1,4 @@
-package com.es.phoneshop.cart;
+package com.es.phoneshop.model.cart;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Cart implements Serializable {
-    private final List<CartItem> items;
+    private List<CartItem> items;
 
     private int totalQuantity;
 
@@ -19,6 +19,10 @@ public class Cart implements Serializable {
 
     public List<CartItem> getItems() {
         return items;
+    }
+
+    public void setItems(List<CartItem> items) {
+        this.items = items;
     }
 
     public int getTotalQuantity() {

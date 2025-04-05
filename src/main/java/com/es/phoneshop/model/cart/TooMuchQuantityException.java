@@ -1,4 +1,4 @@
-package com.es.phoneshop.cart;
+package com.es.phoneshop.model.cart;
 
 public class TooMuchQuantityException extends Exception {
     String productCode;

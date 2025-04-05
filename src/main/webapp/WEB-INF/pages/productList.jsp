@@ -8,12 +8,8 @@
   <p>
     Welcome to Expert-Soft training!
   </p>
-  <c:if test="${not empty param.message and empty error}">
-    <p class="success-message">${param.message}</p>
-  </c:if>
-  <c:if test="${not empty error}">
-    <p class="error-message">Error were found</p>
-  </c:if>
+  <tags:successDisplaying error="${error}"/>
+  <tags:errorDisplaying error="${error}"/>
   <form>
     <input name="searchingQuery" value="${param.searchingQuery}">
     <button>Search</button>

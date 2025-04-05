@@ -1,9 +1,9 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.cart.Cart;
-import com.es.phoneshop.cart.CartService;
-import com.es.phoneshop.cart.TooMuchQuantityException;
-import com.es.phoneshop.history.RecentlyViewedService;
+import com.es.phoneshop.model.cart.Cart;
+import com.es.phoneshop.model.cart.CartService;
+import com.es.phoneshop.model.cart.TooMuchQuantityException;
+import com.es.phoneshop.model.history.RecentlyViewedService;
 import com.es.phoneshop.model.product.PriceHistory;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
@@ -65,7 +65,7 @@ public class ProductDetailsPageServletTest {
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
         when(request.getPathInfo()).thenReturn("/1");
         when(cartService.getCart(request)).thenReturn(cart);
-        when(arrayListProductDao.getProduct(1L)).thenReturn(product);
+        when(arrayListProductDao.getById(1L)).thenReturn(product);
         when(recentlyViewedService.getRecentlyViewedProducts(request)).thenReturn(any());
 
         servlet.init(config);

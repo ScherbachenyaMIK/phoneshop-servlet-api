@@ -1,4 +1,4 @@
-package com.es.phoneshop.history;
+package com.es.phoneshop.model.history;
 
 import com.es.phoneshop.model.product.Product;
 import jakarta.servlet.http.HttpServletRequest;
