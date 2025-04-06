@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.Locale;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -74,32 +73,11 @@ public class CheckoutPageServletTest {
         when(request.getParameter(anyString())).thenReturn(
                 "fname",
                 "sname",
-                "phone",
-                "08.12.2025",
+                "+375291234567",
+                "2025-12-08",
                 "address",
                 "cash"
         );
-        when(request.getLocale()).thenReturn(new Locale("ru", "RU"));
-
-        servlet.doPost(request, response);
-
-        verify(orderService).placeOrder(order);
-        verify(cartService).clear(cart);
-        verify(response).sendRedirect(anyString());
-    }
-
-    @Test
-    public void testDoPostSuccessOtherLocale() throws ServletException, IOException {
-        when(request.getParameter(anyString())).thenReturn(
-                "fname",
-                "sname",
-                "phone",
-                "08/12/2025",
-                "address",
-                "cash"
-        );
-        when(request.getLocale()).thenReturn(Locale.UK);
-
         servlet.doPost(request, response);
 
         verify(orderService).placeOrder(order);
@@ -112,7 +90,7 @@ public class CheckoutPageServletTest {
         when(request.getParameter(anyString())).thenReturn(
                 "",
                 null,
-                "phone",
+                "   ",
                 "",
                 "address",
                 null
@@ -132,11 +110,10 @@ public class CheckoutPageServletTest {
                 "fname",
                 "sname",
                 "phone",
-                "08/12/2025",
+                "2024-12-08",
                 "address",
                 "cash"
         );
-        when(request.getLocale()).thenReturn(new Locale("ru", "RU"));
 
         servlet.doPost(request, response);
 

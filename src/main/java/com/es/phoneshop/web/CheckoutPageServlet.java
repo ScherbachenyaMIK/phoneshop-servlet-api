@@ -15,10 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -30,6 +27,12 @@ public class CheckoutPageServlet extends HttpServlet {
     private static final String PAYMENT_METHODS_ATTRIBUTE_NAME = "paymentMethods";
 
     private static final String JSP_LOCATION_PATH = "/WEB-INF/pages/checkout.jsp";
+
+    private static final String INVALID_DATE_MESSAGE = "Delivery date must be later than current date";
+
+    private static final String INVALID_PHONE_NUMBER_MESSAGE = "Invalid phone number";
+
+    private static final String PHONE_NUMBER_PATTERN = "\\+\\d{12}";
 
     private CartService cartService;
 
@@ -61,7 +64,7 @@ public class CheckoutPageServlet extends HttpServlet {
         Map<String, String> errors = new HashMap<>();
         setRequiredParameter(request, "firstName", errors, order::setFirstName);
         setRequiredParameter(request, "lastName", errors, order::setLastName);
-        setRequiredParameter(request, "phone", errors, order::setPhone);
+        setPhone(request, errors, order);
         setDeliveryDate(request, errors, order);
         setRequiredParameter(request, "deliveryAddress", errors, order::setDeliveryAddress);
         setPaymentMethod(request, errors, order);
@@ -85,10 +88,28 @@ public class CheckoutPageServlet extends HttpServlet {
                                       Map<String, String> errors, Consumer<String> consumer) {
         String value = request.getParameter(parameter);
 
-        if (value == null || value.isEmpty()) {
+        if (value == null || value.trim().isEmpty()) {
             errors.put(parameter, Messages.REQUIRED_FIELD_IS_EMPTY);
         } else {
-            consumer.accept(value);
+            consumer.accept(value.trim());
+        }
+    }
+
+    private void setPhone(HttpServletRequest request, Map<String, String> errors, Order order) {
+        String parameter = "phone";
+        String value = request.getParameter(parameter);
+
+        if (value == null || value.trim().isEmpty()) {
+            errors.put(parameter, Messages.REQUIRED_FIELD_IS_EMPTY);
+            return;
+        }
+
+        value = value.trim();
+
+        if (value.matches(PHONE_NUMBER_PATTERN)) {
+            order.setPhone(value);
+        } else {
+            errors.put(parameter, INVALID_PHONE_NUMBER_MESSAGE);
         }
     }
 
@@ -96,22 +117,23 @@ public class CheckoutPageServlet extends HttpServlet {
         String parameter = "deliveryDate";
         String value = request.getParameter(parameter);
 
-        if (value == null || value.isEmpty()) {
+        if (value == null || value.trim().isEmpty()) {
             errors.put(parameter, Messages.REQUIRED_FIELD_IS_EMPTY);
             return;
         }
 
-        Locale locale = request.getLocale();
-        DateTimeFormatter formatter = DateTimeFormatter
-                .ofLocalizedDate(FormatStyle.SHORT)
-                .withLocale(locale);
+        String[] values = value.trim().split("-");
 
-        try {
-            LocalDate deliveryDate = LocalDate.parse(value, formatter);
+        LocalDate deliveryDate = LocalDate.of(
+                Integer.parseInt(values[0]),
+                Integer.parseInt(values[1]),
+                Integer.parseInt(values[2])
+        );
+
+        if (LocalDate.now().isBefore(deliveryDate)) {
             order.setDeliveryDate(deliveryDate);
-        } catch (RuntimeException e) {
-            errors.put(parameter, "Invalid date format." +
-                    "Expected format: " + LocalDate.now().format(formatter));
+        } else {
+            errors.put(parameter, INVALID_DATE_MESSAGE);
         }
     }
 
@@ -119,10 +141,10 @@ public class CheckoutPageServlet extends HttpServlet {
         String parameter = "paymentMethod";
         String value = request.getParameter(parameter);
 
-        if (value == null || value.isEmpty()) {
+        if (value == null || value.trim().isEmpty()) {
             errors.put(parameter, Messages.REQUIRED_FIELD_IS_EMPTY);
         } else {
-            order.setPaymentMethod(PaymentMethod.valueOf(value));
+            order.setPaymentMethod(PaymentMethod.valueOf(value.trim()));
         }
     }
 }

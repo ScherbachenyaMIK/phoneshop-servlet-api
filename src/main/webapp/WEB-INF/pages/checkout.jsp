@@ -67,20 +67,20 @@
     </table>
     <h2>Your information:</h2>
     <table>
-      <tags:orderFormRow name="firstName" label="First name" order="${order}" errors="${errors}" />
-      <tags:orderFormRow name="lastName" label="Last name" order="${order}" errors="${errors}" />
-      <tags:orderFormRow name="phone" label="Phone" order="${order}" errors="${errors}" />
+      <tags:orderFormRow name="firstName" label="First name" placeholder="Ann" order="${order}" errors="${errors}" />
+      <tags:orderFormRow name="lastName" label="Last name" placeholder="Bowl" order="${order}" errors="${errors}" />
+      <tags:orderFormRow name="phone" label="Phone" placeholder="+375291234567" order="${order}" errors="${errors}" />
       <tr>
         <td>Delivery date<span style="color: red">*</span></td>
         <td>
           <c:set var="error" value="${errors['deliveryDate']}" />
-          <input name="deliveryDate" value="${param['deliveryDate']}" />
+          <input type="date" name="deliveryDate" value="${param['deliveryDate']}" />
           <c:if test="${not empty error}">
             <p class="error-message">${error}</p>
           </c:if>
         </td>
       </tr>
-      <tags:orderFormRow name="deliveryAddress" label="Delivery address" order="${order}" errors="${errors}" />
+      <tags:orderFormRow name="deliveryAddress" label="Delivery address" placeholder="2 Chapel Hill LONDON" order="${order}" errors="${errors}" />
       <tr>
         <td>Payment method<span style="color: red">*</span></td>
         <td>
