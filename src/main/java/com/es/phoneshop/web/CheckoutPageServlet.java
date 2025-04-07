@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
+import org.apache.maven.shared.utils.StringUtils;
 
 public class CheckoutPageServlet extends HttpServlet {
     private static final String ORDER_ATTRIBUTE_NAME = "order";
@@ -88,7 +89,7 @@ public class CheckoutPageServlet extends HttpServlet {
                                       Map<String, String> errors, Consumer<String> consumer) {
         String value = request.getParameter(parameter);
 
-        if (value == null || value.trim().isEmpty()) {
+        if (StringUtils.isBlank(value)) {
             errors.put(parameter, Messages.REQUIRED_FIELD_IS_EMPTY);
         } else {
             consumer.accept(value.trim());
@@ -99,7 +100,7 @@ public class CheckoutPageServlet extends HttpServlet {
         String parameter = "phone";
         String value = request.getParameter(parameter);
 
-        if (value == null || value.trim().isEmpty()) {
+        if (StringUtils.isBlank(value)) {
             errors.put(parameter, Messages.REQUIRED_FIELD_IS_EMPTY);
             return;
         }
@@ -117,18 +118,12 @@ public class CheckoutPageServlet extends HttpServlet {
         String parameter = "deliveryDate";
         String value = request.getParameter(parameter);
 
-        if (value == null || value.trim().isEmpty()) {
+        if (StringUtils.isBlank(value)) {
             errors.put(parameter, Messages.REQUIRED_FIELD_IS_EMPTY);
             return;
         }
 
-        String[] values = value.trim().split("-");
-
-        LocalDate deliveryDate = LocalDate.of(
-                Integer.parseInt(values[0]),
-                Integer.parseInt(values[1]),
-                Integer.parseInt(values[2])
-        );
+        LocalDate deliveryDate = LocalDate.parse(value.trim());
 
         if (LocalDate.now().isBefore(deliveryDate)) {
             order.setDeliveryDate(deliveryDate);
@@ -141,7 +136,7 @@ public class CheckoutPageServlet extends HttpServlet {
         String parameter = "paymentMethod";
         String value = request.getParameter(parameter);
 
-        if (value == null || value.trim().isEmpty()) {
+        if (StringUtils.isBlank(value)) {
             errors.put(parameter, Messages.REQUIRED_FIELD_IS_EMPTY);
         } else {
             order.setPaymentMethod(PaymentMethod.valueOf(value.trim()));
