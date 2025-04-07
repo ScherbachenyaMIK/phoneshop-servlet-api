@@ -1,6 +1,6 @@
 package com.es.phoneshop.model.product;
 
-import com.es.phoneshop.web.ProductDemoDataServletContextListener;
+import com.es.phoneshop.web.listener.ProductDemoDataServletContextListener;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import java.math.BigDecimal;

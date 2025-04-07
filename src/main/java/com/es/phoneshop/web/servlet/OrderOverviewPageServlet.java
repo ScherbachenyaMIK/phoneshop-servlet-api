@@ -1,4 +1,4 @@
-package com.es.phoneshop.web;
+package com.es.phoneshop.web.servlet;
 
 import com.es.phoneshop.model.order.ArrayListOrderDao;
 import com.es.phoneshop.model.order.Order;

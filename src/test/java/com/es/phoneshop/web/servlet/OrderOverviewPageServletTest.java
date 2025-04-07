@@ -1,7 +1,7 @@
-package com.es.phoneshop.web;
+package com.es.phoneshop.web.servlet;
 
-import com.es.phoneshop.model.cart.Cart;
-import com.es.phoneshop.model.cart.CartService;
+import com.es.phoneshop.model.order.Order;
+import com.es.phoneshop.model.order.OrderDao;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class MiniCartServletTest {
+public class OrderOverviewPageServletTest {
     @Mock
     private HttpServletRequest request;
     @Mock
@@ -30,40 +30,31 @@ public class MiniCartServletTest {
     @Mock
     private ServletConfig config;
     @Mock
-    private CartService cartService;
+    private OrderDao orderDao;
     @Mock
-    private Cart cart;
+    private Order order;
 
-    private final MiniCartServlet servlet = new MiniCartServlet();
+    private final OrderOverviewPageServlet servlet = new OrderOverviewPageServlet();
 
     @Before
     public void setUp() throws Exception {
-        when(cartService.getCart(request)).thenReturn(cart);
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
+        when(request.getPathInfo()).thenReturn("/1");
+        when(orderDao.getBySecureId(eq("1"))).thenReturn(order);
 
         servlet.init(config);
 
-        Field service = MiniCartServlet.class
-                .getDeclaredField("cartService");
-        service.setAccessible(true);
-        service.set(servlet, cartService);
+        Field orderDaoField = OrderOverviewPageServlet.class
+                .getDeclaredField("orderDao");
+        orderDaoField.setAccessible(true);
+        orderDaoField.set(servlet, orderDao);
     }
 
     @Test
     public void testDoGet() throws ServletException, IOException {
         servlet.doGet(request, response);
 
-        verify(cartService).getCart(request);
-        verify(request).setAttribute(eq("cart"), any());
-        verify(requestDispatcher).include(request, response);
-    }
-
-    @Test
-    public void testDoPost() throws ServletException, IOException {
-        servlet.doPost(request, response);
-
-        verify(cartService).getCart(request);
-        verify(request).setAttribute(eq("cart"), any());
-        verify(requestDispatcher).include(request, response);
+        verify(request).setAttribute(eq("order"), any());
+        verify(requestDispatcher).forward(request, response);
     }
 }

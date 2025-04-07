@@ -10,12 +10,12 @@
     <param-value>true</param-value>
   </context-param>
   <listener>
-    <listener-class>com.es.phoneshop.web.ProductDemoDataServletContextListener</listener-class>
+    <listener-class>com.es.phoneshop.web.listener.ProductDemoDataServletContextListener</listener-class>
   </listener>
 
   <servlet>
     <servlet-name>productList</servlet-name>
-    <servlet-class>com.es.phoneshop.web.ProductListPageServlet</servlet-class>
+    <servlet-class>com.es.phoneshop.web.servlet.ProductListPageServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>productList</servlet-name>
@@ -24,7 +24,7 @@
 
   <servlet>
     <servlet-name>product</servlet-name>
-    <servlet-class>com.es.phoneshop.web.ProductDetailsPageServlet</servlet-class>
+    <servlet-class>com.es.phoneshop.web.servlet.ProductDetailsPageServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>product</servlet-name>
@@ -33,7 +33,7 @@
 
   <servlet>
     <servlet-name>cart</servlet-name>
-    <servlet-class>com.es.phoneshop.web.CartPageServlet</servlet-class>
+    <servlet-class>com.es.phoneshop.web.servlet.CartPageServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>cart</servlet-name>
@@ -42,7 +42,7 @@
 
   <servlet>
     <servlet-name>deleteCartItem</servlet-name>
-    <servlet-class>com.es.phoneshop.web.DeleteCartItemServlet</servlet-class>
+    <servlet-class>com.es.phoneshop.web.servlet.DeleteCartItemServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>deleteCartItem</servlet-name>
@@ -51,7 +51,7 @@
 
   <servlet>
     <servlet-name>miniCart</servlet-name>
-    <servlet-class>com.es.phoneshop.web.MiniCartServlet</servlet-class>
+    <servlet-class>com.es.phoneshop.web.servlet.MiniCartServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>miniCart</servlet-name>
@@ -60,7 +60,7 @@
 
   <servlet>
     <servlet-name>checkout</servlet-name>
-    <servlet-class>com.es.phoneshop.web.CheckoutPageServlet</servlet-class>
+    <servlet-class>com.es.phoneshop.web.servlet.CheckoutPageServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>checkout</servlet-name>
@@ -69,7 +69,7 @@
 
   <servlet>
     <servlet-name>orderOverview</servlet-name>
-    <servlet-class>com.es.phoneshop.web.OrderOverviewPageServlet</servlet-class>
+    <servlet-class>com.es.phoneshop.web.servlet.OrderOverviewPageServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>orderOverview</servlet-name>
@@ -78,7 +78,7 @@
 
   <filter>
     <filter-name>dosFilter</filter-name>
-    <filter-class>com.es.phoneshop.web.DosFilter</filter-class>
+    <filter-class>com.es.phoneshop.web.filter.DosFilter</filter-class>
   </filter>
   <filter-mapping>
     <filter-name>dosFilter</filter-name>

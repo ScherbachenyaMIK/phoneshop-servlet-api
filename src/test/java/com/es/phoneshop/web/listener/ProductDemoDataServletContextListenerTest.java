@@ -1,4 +1,4 @@
-package com.es.phoneshop.web;
+package com.es.phoneshop.web.listener;
 
 import com.es.phoneshop.model.product.ProductDao;
 import jakarta.servlet.ServletContext;
@@ -19,7 +19,7 @@ public class ProductDemoDataServletContextListenerTest {
     private ServletContextEvent event;
     @Mock
     private ServletContext context;
-    private ProductDemoDataServletContextListener listener = new ProductDemoDataServletContextListener();
+    private final ProductDemoDataServletContextListener listener = new ProductDemoDataServletContextListener();
 
     @Test
     public void testContextInitialized() throws IllegalAccessException, NoSuchFieldException {

@@ -1,4 +1,4 @@
-package com.es.phoneshop.web;
+package com.es.phoneshop.web.servlet;
 
 import com.es.phoneshop.common.Messages;
 import com.es.phoneshop.model.cart.Cart;
