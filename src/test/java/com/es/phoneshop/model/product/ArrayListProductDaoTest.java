@@ -1,6 +1,6 @@
 package com.es.phoneshop.model.product;
 
-import com.es.phoneshop.web.ProductDemoDataServletContextListener;
+import com.es.phoneshop.web.listener.ProductDemoDataServletContextListener;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import java.math.BigDecimal;
@@ -54,7 +54,7 @@ public class ArrayListProductDaoTest
         );
 
 
-        Product result = productDao.getProduct(id);
+        Product result = productDao.getById(id);
 
         assertEquals(expected.getId(), result.getId());
         assertEquals(expected.getCode(), result.getCode());
@@ -64,7 +64,7 @@ public class ArrayListProductDaoTest
     public void testGetProductThrowsNoSuchElementException() {
         Long id = 15L;
 
-        productDao.getProduct(id);
+        productDao.getById(id);
     }
 
     @Test
@@ -114,7 +114,7 @@ public class ArrayListProductDaoTest
 
         productDao.save(updateProduct);
         List<Product> result = productDao.findProducts(null, SortingField.none, SortingOrder.none);
-        Product updatedProduct = productDao.getProduct(4L);
+        Product updatedProduct = productDao.getById(4L);
 
         assertEquals(listSize, result.size());
         assertEquals(updateProduct.getCode(), updatedProduct.getCode());
@@ -130,7 +130,7 @@ public class ArrayListProductDaoTest
 
         assertEquals(listSize - 1, result.size());
 
-        productDao.getProduct(7L);
+        productDao.getById(7L);
     }
 
     @Test(expected = NoSuchElementException.class)

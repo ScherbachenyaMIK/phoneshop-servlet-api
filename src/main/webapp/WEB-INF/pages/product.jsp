@@ -41,8 +41,6 @@
   <c:if test="${not empty error}">
     <p class="error-message">${error.message}</p>
   </c:if>
-  <c:if test="${not empty param.message and empty error}">
-    <p class="success-message">${param.message}</p>
-  </c:if>
+  <tags:successDisplaying error="${error}"/>
   <tags:recentlyViewedProducts/>
 </tags:master>
