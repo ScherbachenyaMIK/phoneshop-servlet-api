@@ -10,10 +10,15 @@
   </p>
   <tags:successDisplaying error="${error}"/>
   <tags:errorDisplaying error="${error}"/>
-  <form>
-    <input name="searchingQuery" value="${param.searchingQuery}">
-    <button>Search</button>
-  </form>
+  <div class="searching-spacer">
+    <form>
+      <input name="searchingQuery" value="${param.searchingQuery}">
+      <button>Search</button>
+    </form>
+    <a href="${pageContext.servletContext.contextPath}/search">
+     <button>Advanced search</button>
+    </a>
+  </div>
   <table>
     <thead>
       <tr>
