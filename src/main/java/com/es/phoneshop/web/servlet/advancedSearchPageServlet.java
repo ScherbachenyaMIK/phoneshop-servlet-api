@@ -3,8 +3,7 @@ package com.es.phoneshop.web.servlet;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
-import com.es.phoneshop.model.product.SortingField;
-import com.es.phoneshop.model.product.SortingOrder;
+import com.es.phoneshop.model.product.SearchingCriteria;
 import com.es.phoneshop.util.PriceParser;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -67,10 +66,14 @@ public class advancedSearchPageServlet extends HttpServlet {
                     request.setAttribute(MAX_PRICE_ERROR_ATTRIBUTE_NAME, message);
                 }
             } else {
-                products = arrayListProductDao.findProducts(
-                        "",
-                        SortingField.none,
-                        SortingOrder.none
+                products = arrayListProductDao.findProductsAdvanced(
+                        description,
+                        prices.get("minPrice"),
+                        prices.get("maxPrice"),
+                        SearchingCriteria.valueOf(searchMode
+                                .replaceAll(" ", "")
+                                .replaceAll("w", "W")
+                        )
                 );
             }
         }
