@@ -80,3 +80,10 @@ footer {
 body.product-list {
 
 }
+
+.searching-spacer {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 16px;
+  gap: 5px;
+}
