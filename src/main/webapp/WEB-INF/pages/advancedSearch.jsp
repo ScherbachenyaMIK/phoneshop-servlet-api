@@ -8,14 +8,12 @@
   <p>
     Advanced search
   </p>
-  <tags:successDisplaying error="${error}"/>
-  <tags:errorDisplaying error="${error}"/>
   <form>
     <table>
       <tr>
         <td>Description:</td>
         <td>
-          <input class="${not empty error ? 'error-input' : ''}" name="description" value="${param.description}"/>
+          <input name="description" value="${param.description}"/>
         </td>
         <td>
           <select name="searchMode" id="searchMode">
@@ -27,13 +25,19 @@
       <tr>
         <td>Min price:</td>
         <td>
-          <input class="numeric-val ${not empty error ? 'error-input' : ''}" name="minPrice" value="${param.minPrice}"/>
+          <input class="numeric-val ${not empty minPriceError ? 'error-input' : ''}" name="minPrice" value="${param.minPrice}"/>
+          <c:if test="${not empty minPriceError}">
+            <p class="error-message">${minPriceError}</p>
+          </c:if>
         </td>
       </tr>
       <tr>
         <td>Max price:</td>
         <td>
-          <input class="numeric-val ${not empty error ? 'error-input' : ''}" name="maxPrice" value="${param.maxPrice}"/>
+          <input class="numeric-val ${not empty maxPriceError ? 'error-input' : ''}" name="maxPrice" value="${param.maxPrice}"/>
+          <c:if test="${not empty maxPriceError}">
+            <p class="error-message">${maxPriceError}</p>
+          </c:if>
         </td>
       </tr>
     </table>
